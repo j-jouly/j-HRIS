@@ -197,11 +197,17 @@ body {
 }
 
 /* Batasi ukuran gambar di dalam kotak */
+.logo-wrapper {
+    /* ... kode lainnya tetap ... */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .logo-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-    /*object-fit: cover; /* SANGAT PENTING: agar gambar tidak gepeng */
+    width: 70%;  /* Ukuran gambar lebih kecil dari kotak */
+    height: 70%; /* Ukuran gambar lebih kecil dari kotak */
+    object-fit: contain;
 }
 /* End Logo Header*/
 
@@ -218,6 +224,7 @@ body {
     }
 
 }
+
 
 
 
