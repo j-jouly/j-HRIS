@@ -181,6 +181,27 @@ body {
     background: #33383d;
 }
 
+/* Logo Header*/
+.logo-wrapper {
+    width: 80px;
+    height: 80px;
+    background-color: var(--primary-color); /* Warna dasar jika logo transparan */
+    margin: 0 auto 20px auto; /* Tengah secara horizontal dan jarak bawah 20px */
+    border-radius: 20px; /* Membuat kotak rounded (squircle) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(62, 207, 142, 0.3); /* Shadow halus warna hijau */
+    overflow: hidden; /* Memastikan gambar tetap di dalam kotak rounded */
+}
+
+.logo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Agar gambar logo pas memenuhi kotak */
+}
+/* End Logo Header*/
+
 /* Responsif untuk layar kecil */
 @media (max-width: 500px) {
     .login-card {
@@ -192,4 +213,5 @@ body {
     .social-buttons {
         flex-direction: column;
     }
+
 }
