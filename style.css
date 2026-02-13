@@ -184,22 +184,22 @@ body {
 /* Logo Header*/
 /* Batasi ukuran kotak logo */
 .logo-wrapper {
-    width: 80px;  /* Ukuran kotak */
-    height: 80px; /* Ukuran kotak */
-    margin: 0 auto 20px auto; /* Ketengah & kasih jarak bawah */
-    border-radius: 20px; /* Kotak rounded */
-    overflow: hidden; /* SANGAT PENTING: agar gambar besar di dalam terpotong sesuai kotak */
+    width: 120px;          /* Diperbesar dari 80px */
+    height: 120px;         /* Diperbesar dari 80px */
+    margin: 0 auto 25px auto; /* Jarak bawah ditambah sedikit agar seimbang */
+    border-radius: 30px;   /* Radius ditambah agar lengkungannya tetap proporsional */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid var(--light-gray); /* Optional: garis pinggir halus */
+    border: 3px solid #f0f0f0; /* Opsional: tebalkan sedikit garis pinggirnya */
+    box-shadow: 0 6px 15px rgba(62, 207, 142, 0.2);
 }
 
-/* Batasi ukuran gambar di dalam kotak */
 .logo-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* SANGAT PENTING: agar gambar tidak gepeng */
+    object-fit: cover;
 }
 /* End Logo Header*/
 
@@ -216,6 +216,7 @@ body {
     }
 
 }
+
 
 
 
