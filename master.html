@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #f4f7f9; }
+        body { background: #f4f7f9; overflow: hidden; } /* Mencegah double scroll */
         
         .master-layout {
             display: flex;
@@ -27,6 +27,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
+            align-items: center;
         }
 
         .btn-tool {
@@ -49,6 +50,13 @@
         .btn-save { background: #10b981; color: white; }
         .btn-cancel { background: #94a3b8; color: white; }
         .btn-detail { background: #7e22ce; color: white; }
+        
+        /* Tombol Dashboard Baru */
+        .btn-back { 
+            background: #1a202c; 
+            color: white; 
+            margin-left: auto; /* Mendorong tombol ke ujung kanan */
+        }
 
         .btn-tool:hover { opacity: 0.8; transform: translateY(-1px); }
 
@@ -57,10 +65,10 @@
             display: flex;
             flex: 1;
             gap: 15px;
-            min-height: 0; /* Penting agar scrollbar muncul di child */
+            overflow: hidden; /* Menjaga agar main content tidak meluap */
         }
 
-        /* AREA 2: Grid Table Sisi Kiri */
+        /* AREA 2: Grid Table (Kiri) */
         .grid-area {
             flex: 1;
             background: white;
@@ -73,7 +81,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         th {
@@ -84,6 +92,7 @@
             text-align: left;
             border-bottom: 2px solid #e2e8f0;
             color: #475569;
+            z-index: 10;
         }
 
         td {
@@ -93,7 +102,7 @@
 
         tr:hover { background: #f1f5f9; cursor: pointer; }
 
-        /* AREA 3: Entry Area Sisi Tengah/Kanan */
+        /* AREA 3: Entry Area (Tengah/Kanan) */
         .entry-area {
             flex: 1.5;
             background: white;
@@ -118,7 +127,7 @@
         .form-group.full { grid-column: span 2; }
 
         .form-group label {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #64748b;
         }
@@ -128,6 +137,7 @@
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-family: inherit;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -139,12 +149,18 @@
             <button class="btn-tool btn-modify">📝 Modify</button>
             <button class="btn-tool btn-delete">🗑️ Delete</button>
             <button class="btn-tool btn-search">🔍 Search</button>
-            <div style="width: 2px; background: #e2e8f0; margin: 0 10px;"></div>
+            
+            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
+            
             <button class="btn-tool btn-save">💾 Save</button>
             <button class="btn-tool btn-cancel">❌ Cancel</button>
-            <div style="width: 2px; background: #e2e8f0; margin: 0 10px;"></div>
+            
+            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
+            
             <button class="btn-tool btn-detail">📂 Add Detail</button>
             <button class="btn-tool btn-detail" style="background:#be185d;">➖ Remove Detail</button>
+
+            <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
         <div class="main-content">
@@ -152,53 +168,49 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID Karyawan</th>
+                            <th>ID</th>
+                            <th>Username</th>
                             <th>Nama Lengkap</th>
-                            <th>Jabatan</th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
                         <tr>
-                            <td>EMP001</td>
-                            <td>Budi Santoso</td>
-                            <td>Manager</td>
-                        </tr>
-                        <tr>
-                            <td>EMP002</td>
-                            <td>Siti Aminah</td>
-                            <td>Developer</td>
+                            <td>EMP01M</td>
+                            <td>admin_dii</td>
+                            <td>Administrator DII</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="entry-area">
-                <h3 style="margin-top:0; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block; margin-bottom:20px;">Form Input Employee</h3>
+                <h3 style="margin-top:0; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block; margin-bottom:20px;">Form Employee Master</h3>
                 <form id="employeeForm">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>ID Karyawan</label>
-                            <input type="text" id="empl_id" placeholder="Contoh: EMP001">
+                            <label>Employee ID</label>
+                            <input type="text" id="empl_id" readonly style="background: #f1f5f9;" placeholder="Auto">
                         </div>
                         <div class="form-group">
                             <label>Username (EMPL_UNME)</label>
-                            <input type="text" id="empl_unme">
+                            <input type="text" id="empl_unme" required>
                         </div>
                         <div class="form-group full">
-                            <label>Nama Lengkap</label>
-                            <input type="text" id="empl_name">
+                            <label>Full Name</label>
+                            <input type="text" id="empl_name" required>
                         </div>
                         <div class="form-group">
-                            <label>Jabatan</label>
+                            <label>Password (EMPL_PSWD)</label>
+                            <input type="password" id="empl_pswd" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Role / Position</label>
                             <select id="empl_role">
-                                <option value="staff">Staff</option>
-                                <option value="supervisor">Supervisor</option>
-                                <option value="manager">Manager</option>
+                                <option value="STAFF">Staff</option>
+                                <option value="SUPERVISOR">Supervisor</option>
+                                <option value="MANAGER">Manager</option>
+                                <option value="ADMIN">Admin IT</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="empl_pswd">
                         </div>
                     </div>
                 </form>
@@ -207,12 +219,10 @@
     </div>
 
     <script>
-        // Pastikan session ada sebelum akses
+        // Proteksi sederhana
         if (!localStorage.getItem('userSession')) {
             window.location.href = 'index.html';
         }
-
-        // Logika untuk tombol-tombol dan Supabase akan diletakkan di sini
     </script>
 </body>
 </html>
