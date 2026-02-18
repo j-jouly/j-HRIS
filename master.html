@@ -200,22 +200,24 @@
         async function fetchData() {
             const tableBody = document.getElementById('employeeTableBody');
             tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>';
-
+        
             try {
                 const { data, error } = await supabaseClient
                     .from('TH_EMP01M')
-                    .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL')
-                    .order('create_at', { ascending: false });
-
-                if (error) throw error;
-
+                    .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL'); // Ambil kolom yang dibutuhkan
+        
+                if (error) {
+                    console.error("Detail Error Supabase:", error); // Lihat error asli di F12
+                    throw error;
+                }
+        
                 tableBody.innerHTML = '';
-
-                if (data.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Tidak ada data ditemukan.</td></tr>';
+        
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Data kosong.</td></tr>';
                     return;
                 }
-
+        
                 data.forEach(emp => {
                     const statusDot = emp.EMPL_STAT ? 
                         '<span style="color:#10b981; font-weight:600;">● Active</span>' : 
@@ -224,20 +226,20 @@
                     const levelTag = emp.EMPL_LEVL ? 
                         '<small style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:10px;">Admin</small>' : 
                         '<small style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px;">User</small>';
-
+        
                     const row = `
                         <tr>
                             <td style="font-weight:600; color:#3b82f6;">${emp.EMPL_NMBR}</td>
                             <td>${emp.EMPL_NAME}</td>
                             <td>${statusDot}</td>
-                            <td>${levelText = levelTag}</td>
+                            <td>${levelTag}</td>
                         </tr>
                     `;
                     tableBody.innerHTML += row;
                 });
             } catch (err) {
-                console.error("Fetch Error:", err.message);
-                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Gagal memuat data!</td></tr>';
+                console.error("Fetch Error:", err);
+                tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal: ${err.message}</td></tr>`;
             }
         }
 
