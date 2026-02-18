@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Employee - Sistem Karyawan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Master Employee - Production Version</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #f4f7f9; overflow: hidden; margin: 0; }
+        /* DASHBOARD & MASTER LAYOUT */
+        body { background: #f4f7f9; overflow: hidden; margin: 0; font-family: 'Poppins', sans-serif; }
         
         .master-layout {
             display: flex;
@@ -18,7 +19,7 @@
             gap: 10px;
         }
 
-        /* AREA 1: Toolbar */
+        /* AREA 1: TOOLBAR */
         .toolbar {
             background: white;
             padding: 12px 15px;
@@ -60,11 +61,10 @@
             border: 1px solid #cbd5e1;
             border-radius: 4px;
             font-size: 13px;
-            font-family: inherit;
             min-width: 160px;
         }
 
-        /* Buttons Styling */
+        /* BUTTON STYLING & STATES */
         .btn-tool {
             padding: 8px 15px;
             border: none;
@@ -72,7 +72,7 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 13px;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 5px;
@@ -88,9 +88,22 @@
         .btn-remove-detail { background: #be185d; color: white; }
         .btn-back { background: #1a202c; color: white; margin-left: auto; }
 
-        .btn-tool:hover { opacity: 0.8; transform: translateY(-1px); }
+        /* DISABLED STATE (Grey Style) */
+        .btn-tool:disabled {
+            background-color: #d1d5db !important;
+            color: #9ca3af !important;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+            opacity: 0.7;
+        }
 
-        /* Main Content */
+        .btn-tool:hover:not(:disabled) {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        /* MAIN CONTENT AREA */
         .main-content {
             display: flex;
             flex: 1;
@@ -98,7 +111,6 @@
             overflow: hidden;
         }
 
-        /* AREA 2: Grid Table */
         .grid-area {
             flex: 1;
             background: white;
@@ -108,12 +120,7 @@
             border: 1px solid #e2e8f0;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th {
             background: #f8fafc;
             position: sticky;
@@ -124,11 +131,9 @@
             color: #475569;
             z-index: 10;
         }
-
         td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
         tr:hover { background: #f1f5f9; cursor: pointer; }
 
-        /* AREA 3: Entry Area */
         .entry-area {
             flex: 1.2;
             background: white;
@@ -138,12 +143,8 @@
             overflow-y: auto;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
+        /* FORM INPUT STYLING */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group.full { grid-column: span 2; }
         .form-group label { font-size: 12px; font-weight: 600; color: #64748b; }
@@ -152,30 +153,30 @@
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-family: inherit;
+            font-size: 14px;
         }
+        .form-group input:focus { outline: none; border-color: #3ecf8e; }
     </style>
 </head>
 <body>
 
     <div class="master-layout">
         <div class="toolbar">
-            <button class="btn-tool btn-new">➕ New</button>
-            <button class="btn-tool btn-modify">📝 Modify</button>
-            <button class="btn-tool btn-delete">🗑️ Delete</button>
-            <button class="btn-tool btn-search">🔍 Search</button>
+            <button id="btnNew" class="btn-tool btn-new" onclick="setMode('edit')">➕ New</button>
+            <button id="btnModify" class="btn-tool btn-modify" onclick="setMode('edit')">📝 Modify</button>
+            <button id="btnDelete" class="btn-tool btn-delete">🗑️ Delete</button>
+            <button id="btnSearch" class="btn-tool btn-search">🔍 Search</button>
             
             <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
             
-            <button class="btn-tool btn-save">💾 Save</button>
-            <button class="btn-tool btn-cancel">❌ Cancel</button>
+            <button id="btnSave" class="btn-tool btn-save" disabled>💾 Save</button>
+            <button id="btnCancel" class="btn-tool btn-cancel" onclick="setMode('view')" disabled>❌ Cancel</button>
             
             <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
             
-            <button class="btn-tool btn-detail">📂 Add Detail</button>
-            <button class="btn-tool btn-remove-detail">➖ Remove Detail</button>
-            
-            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
-            
+            <button id="btnAddDetail" class="btn-tool btn-detail" disabled>📂 Add Detail</button>
+            <button id="btnRemoveDetail" class="btn-tool btn-remove-detail" disabled>➖ Remove Detail</button>
+
             <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
@@ -223,41 +224,67 @@
             </div>
 
             <div class="entry-area">
-                <h3 style="margin:0 0 15px 0; font-size: 1.2em; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block;">Data Entry</h3>
+                <h3 style="margin:0 0 15px 0; font-size: 1.1em; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block;">Data Entry Employee</h3>
                 <form id="employeeForm">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Kode Karyawan</label>
-                            <input type="text" id="empl_id" readonly style="background: #f8fafc;" placeholder="Otomatis">
+                            <input type="text" id="empl_id" readonly style="background: #f8fafc;" placeholder="Auto Generate">
                         </div>
                         <div class="form-group">
-                            <label>Status Karyawan</label>
-                            <select id="empl_status">
+                            <label>Status</label>
+                            <select id="empl_status" disabled>
                                 <option value="1">1 : Active</option>
                                 <option value="0">0 : In Active</option>
                             </select>
                         </div>
                         <div class="form-group full">
                             <label>Nama Lengkap</label>
-                            <input type="text" id="empl_name" placeholder="Masukkan Nama Lengkap"> 
+                            <input type="text" id="empl_name" placeholder="Masukan Nama Lengkap" disabled>
                         </div>
                         <div class="form-group full">
                             <label>Alamat</label>
-                            <textarea id="empl_address" rows="3" style="resize: none;" placeholder="Masukan Alamat Karyawan"></textarea>
+                            <textarea id="empl_address" rows="3" style="resize: none;" placeholder="Masukan Alamat Karyawan" disabled></textarea>
                         </div>
-                        <div class="form-group full">
-                            <label>User Name</label>
-                            <input type="text" id="empl_unme" placeholder="Masukkan User Name"> 
-                        </div>       
-                        <div class="form-group full">
-                            <label>User Password</label>
-                            <input type="text" id="empl_pswd" placeholder="Masukkan Password">                           
-                        </div>                               
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <script>
+        // Objek Tombol
+        const btn = {
+            nav: [document.getElementById('btnNew'), document.getElementById('btnModify'), document.getElementById('btnDelete'), document.getElementById('btnSearch')],
+            action: [document.getElementById('btnSave'), document.getElementById('btnCancel'), document.getElementById('btnAddDetail'), document.getElementById('btnRemoveDetail')],
+            inputs: document.querySelectorAll('#employeeForm input:not(#empl_id), #employeeForm select, #employeeForm textarea')
+        };
+
+        /**
+         * Mengatur State UI (View vs Edit)
+         */
+        function setMode(mode) {
+            if (mode === 'edit') {
+                // Disable Navigasi, Enable Action
+                btn.nav.forEach(b => b.disabled = true);
+                btn.action.forEach(b => b.disabled = false);
+                btn.inputs.forEach(i => i.disabled = false);
+                document.getElementById('empl_name').focus();
+            } else {
+                // Enable Navigasi, Disable Action
+                btn.nav.forEach(b => b.disabled = false);
+                btn.action.forEach(b => b.disabled = true);
+                btn.inputs.forEach(i => i.disabled = true);
+                document.getElementById('employeeForm').reset();
+            }
+        }
+
+        // Proteksi Session
+        window.onload = () => {
+            if (!localStorage.getItem('userSession')) {
+                window.location.href = 'index.html';
+            }
+        };
+    </script>
 </body>
 </html>
