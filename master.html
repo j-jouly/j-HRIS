@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Employee - Production</title>
+    <title>Master Employee - Production Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
@@ -11,20 +11,26 @@
         body { background: #f4f7f9; overflow: hidden; margin: 0; font-family: 'Poppins', sans-serif; }
         .master-layout { display: flex; flex-direction: column; height: 100vh; padding: 15px; box-sizing: border-box; gap: 10px; }
         
-        /* AREA 1: TOOLBAR */
+        /* TOOLBAR */
         .toolbar { background: white; padding: 12px 15px; border-radius: 8px; box-shadow: var(--shadow-light); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .btn-tool { padding: 8px 15px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
         .btn-new { background: #3ecf8e; color: white; }
+        .btn-modify { background: #3b82f6; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+        .btn-search { background: #64748b; color: white; }
         .btn-save { background: #10b981; color: white; }
         .btn-cancel { background: #94a3b8; color: white; }
+        .btn-detail { background: #7e22ce; color: white; }
+        .btn-remove { background: #be185d; color: white; }
         .btn-back { background: #1a202c; color: white; margin-left: auto; }
+        
         .btn-tool:disabled { background-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.7; }
 
-        /* AREA 2: SEARCH */
+        /* SEARCH AREA */
         .search-area { background: #ffffff; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-light); display: flex; flex-wrap: wrap; gap: 20px; border: 1px solid #e2e8f0; }
         .search-group { display: flex; flex-direction: column; gap: 5px; }
         .search-group label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
-        .search-group input, .search-group select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; min-width: 160px; }
+        .search-group input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; min-width: 160px; }
 
         /* MAIN CONTENT */
         .main-content { display: flex; flex: 1; gap: 15px; overflow: hidden; }
@@ -46,12 +52,20 @@
     <div class="master-layout">
         <div class="toolbar">
             <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">➕ New</button>
-            <button id="btnModify" class="btn-tool" style="background:#3b82f6; color:white;">📝 Modify</button>
-            <button id="btnDelete" class="btn-tool" style="background:#ef4444; color:white;">🗑️ Delete</button>
-            <button id="btnSearch" class="btn-tool" style="background:#64748b; color:white;">🔍 Search</button>
+            <button id="btnModify" class="btn-tool btn-modify">📝 Modify</button>
+            <button id="btnDelete" class="btn-tool btn-delete">🗑️ Delete</button>
+            <button id="btnSearch" class="btn-tool btn-search">🔍 Search</button>
+            
             <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
+            
             <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>💾 Save</button>
             <button id="btnCancel" class="btn-tool btn-cancel" onclick="setMode('view')" disabled>❌ Cancel</button>
+            
+            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
+            
+            <button id="btnAddDetail" class="btn-tool btn-detail" disabled>📂 Add Detail</button>
+            <button id="btnRemoveDetail" class="btn-tool btn-remove" disabled>➖ Remove Detail</button>
+
             <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
@@ -60,7 +74,7 @@
             <div class="search-group"><label>Nama</label><input type="text" id="search_nama"></div>
             <div class="search-group">
                 <label>Status</label>
-                <select id="search_status">
+                <select id="search_status" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px;">
                     <option value="">-- Semua --</option>
                     <option value="1">Active</option>
                     <option value="0">In Active</option>
@@ -71,7 +85,7 @@
         <div class="main-content">
             <div class="grid-area">
                 <table>
-                    <thead><tr><th>Kode</th><th>Nama</th><th>Username</th></tr></thead>
+                    <thead><tr><th>Kode</th><th>Nama</th><th>Status</th></tr></thead>
                     <tbody id="employeeTableBody"></tbody>
                 </table>
             </div>
@@ -81,34 +95,34 @@
                 <form id="employeeForm">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Nomor Karyawan (EMPL_NMBR)</label>
+                            <label>Nomor Karyawan</label>
                             <input type="text" id="empl_nmbr" readonly style="background: #f8fafc;">
                         </div>
                         <div class="form-group">
-                            <label>Status (EMPL_STAT)</label>
+                            <label>Status</label>
                             <select id="empl_stat" disabled>
                                 <option value="1">1 : Active</option>
                                 <option value="0">0 : In Active</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Username (EMPL_UNME)</label>
-                            <input type="text" id="empl_unme" placeholder="Username Login" disabled>
+                            <label>Username</label>
+                            <input type="text" id="empl_unme" disabled>
                         </div>
                         <div class="form-group">
-                            <label>Password (EMPL_PSWD)</label>
-                            <input type="password" id="empl_pswd" placeholder="Password" disabled>
+                            <label>Password</label>
+                            <input type="password" id="empl_pswd" disabled>
                         </div>
                         <div class="form-group full">
-                            <label>Nama Lengkap (EMPL_NAME)</label>
-                            <input type="text" id="empl_name" placeholder="Nama Lengkap" disabled>
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="empl_name" disabled>
                         </div>
                         <div class="form-group full">
-                            <label>Alamat (EMPL_ADDR)</label>
+                            <label>Alamat</label>
                             <textarea id="empl_addr" rows="2" style="resize:none;" placeholder="Masukan Alamat Karyawan" disabled></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Level Akses (EMPL_LEVL)</label>
+                            <label>Level Akses</label>
                             <select id="empl_levl" disabled>
                                 <option value="0">User</option>
                                 <option value="1">Admin</option>
@@ -121,13 +135,13 @@
     </div>
 
     <script>
-        // GANTI DENGAN URL & KEY ANDA
+        // Inisialisasi Supabase
         const _supabaseUrl = 'https://bzrycuvpbsxvutqhxowp.supabase.co';
         const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cnljdXZwYnN4dnV0cWh4b3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTk5OTEsImV4cCI6MjA4NjkzNTk5MX0.MI2suZLflcMbc5AbPCRaT7_pT9qQISrsV5dKA63Si8s';
         const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
-        
+
         const btnNav = ['btnNew', 'btnModify', 'btnDelete', 'btnSearch'];
-        const btnAct = ['btnSave', 'btnCancel'];
+        const btnAct = ['btnSave', 'btnCancel', 'btnAddDetail', 'btnRemoveDetail']; // Ditambahkan tombol detail
         const formInputs = ['empl_unme', 'empl_pswd', 'empl_name', 'empl_addr', 'empl_stat', 'empl_levl'];
 
         function setMode(mode) {
@@ -144,7 +158,6 @@
         async function startNew() {
             setMode('edit');
             try {
-                // Ambil count data untuk auto-numbering
                 const { count, error } = await supabaseClient
                     .from('TH_EMP01M')
                     .select('*', { count: 'exact', head: true });
@@ -164,11 +177,10 @@
                 EMPL_UNME: document.getElementById('empl_unme').value,
                 EMPL_PSWD: document.getElementById('empl_pswd').value,
                 EMPL_ADDR: document.getElementById('empl_addr').value,
-                EMPL_STAT: parseInt(document.getElementById('empl_stat').value),
-                EMPL_LEVL: parseInt(document.getElementById('empl_levl').value)
+                EMPL_STAT: parseInt(document.getElementById('empl_stat').value) === 1, // Mengirim boolean jika diperlukan
+                EMPL_LEVL: parseInt(document.getElementById('empl_levl').value) === 1
             };
 
-            // Validasi Sederhana
             if (!data.EMPL_NAME || !data.EMPL_UNME) return alert("Nama dan Username wajib diisi!");
 
             try {
@@ -177,13 +189,11 @@
                 
                 alert("Data Berhasil Disimpan!");
                 setMode('view');
-                // Refresh data grid (Opsional: tambahkan fungsi fetch data di sini)
             } catch (err) {
                 alert("Gagal Simpan: " + err.message);
             }
         }
 
-        // Cek Session
         window.onload = () => {
             if (!localStorage.getItem('userSession')) window.location.href = 'index.html';
         };
