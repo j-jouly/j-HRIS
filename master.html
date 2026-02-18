@@ -197,24 +197,40 @@
         }
 
         // FUNGSI UNTUK MENAMPILKAN DATA PADA TABEL
+        /**
+         * Fungsi Fetch Data dengan fitur Filter
+         * Mengambil data secara Async dari Supabase
+         */
         async function fetchData() {
             const tableBody = document.getElementById('employeeTableBody');
-            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>';
+            
+            // Ambil nilai dari input pencarian
+            const s_kode = document.getElementById('search_kode').value;
+            const s_nama = document.getElementById('search_nama').value;
+            const s_stat = document.getElementById('search_status').value;
+        
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">🔍 Mencari data...</td></tr>';
         
             try {
-                const { data, error } = await supabaseClient
+                // 1. Inisialisasi Query
+                let query = supabaseClient
                     .from('TH_EMP01M')
-                    .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL'); // Ambil kolom yang dibutuhkan
+                    .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL');
         
-                if (error) {
-                    console.error("Detail Error Supabase:", error); // Lihat error asli di F12
-                    throw error;
-                }
+                // 2. Tambahkan Filter jika input terisi (ILike = Case Insensitive search)
+                if (s_kode) query = query.ilike('EMPL_NMBR', `%${s_kode}%`);
+                if (s_nama) query = query.ilike('EMPL_NAME', `%${s_nama}%`);
+                if (s_stat !== "") query = query.eq('EMPL_STAT', s_stat === "1");
         
+                // 3. Eksekusi Query dengan urutan terbaru di atas
+                const { data, error } = await query.order('create_at', { ascending: false });
+        
+                if (error) throw error;
+        
+                // 4. Render ke Tabel
                 tableBody.innerHTML = '';
-        
-                if (!data || data.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Data kosong.</td></tr>';
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Data tidak ditemukan.</td></tr>';
                     return;
                 }
         
@@ -228,7 +244,7 @@
                         '<small style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px;">User</small>';
         
                     const row = `
-                        <tr>
+                        <tr onclick="getDetail('${emp.EMPL_NMBR}')" title="Klik untuk lihat detail">
                             <td style="font-weight:600; color:#3b82f6;">${emp.EMPL_NMBR}</td>
                             <td>${emp.EMPL_NAME}</td>
                             <td>${statusDot}</td>
@@ -237,8 +253,9 @@
                     `;
                     tableBody.innerHTML += row;
                 });
+        
             } catch (err) {
-                console.error("Fetch Error:", err);
+                console.error("Fetch Error:", err.message);
                 tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal: ${err.message}</td></tr>`;
             }
         }
