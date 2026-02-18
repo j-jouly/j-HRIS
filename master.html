@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Employee - Sistem Karyawan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #f4f7f9; }
+        
+        .master-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 15px;
+            box-sizing: border-box;
+            gap: 15px;
+        }
+
+        /* AREA 1: Toolbar Sisi Atas */
+        .toolbar {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-tool {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-new { background: #3ecf8e; color: white; }
+        .btn-modify { background: #3b82f6; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+        .btn-search { background: #64748b; color: white; }
+        .btn-save { background: #10b981; color: white; }
+        .btn-cancel { background: #94a3b8; color: white; }
+        .btn-detail { background: #7e22ce; color: white; }
+
+        .btn-tool:hover { opacity: 0.8; transform: translateY(-1px); }
+
+        /* Container untuk Area 2 & 3 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+            min-height: 0; /* Penting agar scrollbar muncul di child */
+        }
+
+        /* AREA 2: Grid Table Sisi Kiri */
+        .grid-area {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8fafc;
+            position: sticky;
+            top: 0;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+            color: #475569;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:hover { background: #f1f5f9; cursor: pointer; }
+
+        /* AREA 3: Entry Area Sisi Tengah/Kanan */
+        .entry-area {
+            flex: 1.5;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group.full { grid-column: span 2; }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="master-layout">
+        <div class="toolbar">
+            <button class="btn-tool btn-new">➕ New</button>
+            <button class="btn-tool btn-modify">📝 Modify</button>
+            <button class="btn-tool btn-delete">🗑️ Delete</button>
+            <button class="btn-tool btn-search">🔍 Search</button>
+            <div style="width: 2px; background: #e2e8f0; margin: 0 10px;"></div>
+            <button class="btn-tool btn-save">💾 Save</button>
+            <button class="btn-tool btn-cancel">❌ Cancel</button>
+            <div style="width: 2px; background: #e2e8f0; margin: 0 10px;"></div>
+            <button class="btn-tool btn-detail">📂 Add Detail</button>
+            <button class="btn-tool btn-detail" style="background:#be185d;">➖ Remove Detail</button>
+        </div>
+
+        <div class="main-content">
+            <div class="grid-area">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Karyawan</th>
+                            <th>Nama Lengkap</th>
+                            <th>Jabatan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <tr>
+                            <td>EMP001</td>
+                            <td>Budi Santoso</td>
+                            <td>Manager</td>
+                        </tr>
+                        <tr>
+                            <td>EMP002</td>
+                            <td>Siti Aminah</td>
+                            <td>Developer</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="entry-area">
+                <h3 style="margin-top:0; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block; margin-bottom:20px;">Form Input Employee</h3>
+                <form id="employeeForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>ID Karyawan</label>
+                            <input type="text" id="empl_id" placeholder="Contoh: EMP001">
+                        </div>
+                        <div class="form-group">
+                            <label>Username (EMPL_UNME)</label>
+                            <input type="text" id="empl_unme">
+                        </div>
+                        <div class="form-group full">
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="empl_name">
+                        </div>
+                        <div class="form-group">
+                            <label>Jabatan</label>
+                            <select id="empl_role">
+                                <option value="staff">Staff</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="manager">Manager</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="empl_pswd">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pastikan session ada sebelum akses
+        if (!localStorage.getItem('userSession')) {
+            window.location.href = 'index.html';
+        }
+
+        // Logika untuk tombol-tombol dan Supabase akan diletakkan di sini
+    </script>
+</body>
+</html>
