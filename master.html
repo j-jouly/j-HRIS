@@ -11,9 +11,34 @@
         body { background: #f4f7f9; overflow: hidden; margin: 0; font-family: 'Poppins', sans-serif; }
         .master-layout { display: flex; flex-direction: column; height: 100vh; padding: 15px; box-sizing: border-box; gap: 10px; }
         
-        /* TOOLBAR */
-        .toolbar { background: white; padding: 12px 15px; border-radius: 8px; box-shadow: var(--shadow-light); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .btn-tool { padding: 8px 15px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+        /* TOOLBAR & HOVER EFFECTS */
+        .toolbar { background: white; padding: 12px 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        
+        .btn-tool { 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Hover Animation */
+        .btn-tool:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            filter: brightness(1.1);
+        }
+
+        .btn-tool:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
         .btn-new { background: #3ecf8e; color: white; }
         .btn-modify { background: #3b82f6; color: white; }
         .btn-delete { background: #ef4444; color: white; }
@@ -24,10 +49,10 @@
         .btn-remove { background: #be185d; color: white; }
         .btn-back { background: #1a202c; color: white; margin-left: auto; }
         
-        .btn-tool:disabled { background-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.7; }
+        .btn-tool:disabled { background-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.7; transform: none !important; box-shadow: none !important; }
 
         /* SEARCH AREA */
-        .search-area { background: #ffffff; padding: 15px; border-radius: 8px; box-shadow: var(--shadow-light); display: flex; flex-wrap: wrap; gap: 20px; border: 1px solid #e2e8f0; }
+        .search-area { background: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 20px; border: 1px solid #e2e8f0; }
         .search-group { display: flex; flex-direction: column; gap: 5px; }
         .search-group label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
         .search-group input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; min-width: 160px; }
@@ -35,17 +60,22 @@
         /* MAIN CONTENT */
         .main-content { display: flex; flex: 1; gap: 15px; overflow: hidden; }
         .grid-area { flex: 1; background: white; border-radius: 8px; overflow-y: auto; border: 1px solid #e2e8f0; }
+        
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f8fafc; position: sticky; top: 0; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #475569; }
-        td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
-        tr:hover { background: #f1f5f9; cursor: pointer; }
+        th { background: #f8fafc; position: sticky; top: 0; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #475569; z-index: 5; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+        
+        tr { transition: background 0.2s; cursor: pointer; }
+        tr:hover { background: #f8fafc; }
 
-        .entry-area { flex: 1.2; background: white; border-radius: 8px; padding: 20px; overflow-y: auto; box-shadow: var(--shadow-light); }
+        .entry-area { flex: 1.2; background: white; border-radius: 8px; padding: 20px; overflow-y: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group.full { grid-column: span 2; }
         .form-group label { font-size: 12px; font-weight: 600; color: #64748b; }
-        .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; }
+        .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; }
+        
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
     </style>
 </head>
 <body>
@@ -53,7 +83,7 @@
     <div class="master-layout">
         <div class="toolbar">
             <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">➕ New</button>
-            <button id="btnModify" class="btn-tool btn-modify">📝 Modify</button>
+            <button id="btnModify" class="btn-tool btn-modify" onclick="alert('Pilih data di tabel terlebih dahulu untuk Modify')">📝 Modify</button>
             <button id="btnDelete" class="btn-tool btn-delete">🗑️ Delete</button>
             <button id="btnSearch" class="btn-tool btn-search" onclick="fetchData()">🔍 Search</button>
             
@@ -71,8 +101,8 @@
         </div>
 
         <div class="search-area">
-            <div class="search-group"><label>Kode</label><input type="text" id="search_kode"></div>
-            <div class="search-group"><label>Nama</label><input type="text" id="search_nama"></div>
+            <div class="search-group"><label>Kode</label><input type="text" id="search_kode" placeholder="Cari Kode..."></div>
+            <div class="search-group"><label>Nama</label><input type="text" id="search_nama" placeholder="Cari Nama..."></div>
             <div class="search-group">
                 <label>Status</label>
                 <select id="search_status" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px;">
@@ -91,19 +121,21 @@
                             <th>Kode</th>
                             <th>Nama</th>
                             <th>Status</th>
-                            <th>Level</th> </tr>
+                            <th>Level</th>
+                        </tr>
                     </thead>
-                    <tbody id="employeeTableBody"></tbody>
+                    <tbody id="employeeTableBody">
+                        </tbody>
                 </table>
             </div>
 
             <div class="entry-area">
-                <h3 style="margin-top:0; border-bottom: 2px solid #3ecf8e; display:inline-block;">Entry Employee Data</h3>
+                <h3 style="margin-top:0; border-bottom: 2px solid #3ecf8e; display:inline-block; padding-bottom: 5px; color: #1e293b;">Data Entry</h3>
                 <form id="employeeForm">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Nomor Karyawan</label>
-                            <input type="text" id="empl_nmbr" readonly style="background: #f8fafc;">
+                            <input type="text" id="empl_nmbr" readonly style="background: #f1f5f9; color: #64748b; font-weight: bold;">
                         </div>
                         <div class="form-group">
                             <label>Status</label>
@@ -115,11 +147,11 @@
 
                         <div class="form-group full">
                             <label>Nama Lengkap</label>
-                            <input type="text" id="empl_name" disabled>
+                            <input type="text" id="empl_name" disabled placeholder="Nama Karyawan sesuai KTP">
                         </div>
                         <div class="form-group full">
                             <label>Alamat</label>
-                            <textarea id="empl_addr" rows="2" style="resize:none;" placeholder="Masukan Alamat Karyawan" disabled></textarea>
+                            <textarea id="empl_addr" rows="2" style="resize:none;" placeholder="Masukan Alamat Lengkap" disabled></textarea>
                         </div>
                         <div class="form-group">
                             <label>Level Akses</label>
@@ -144,6 +176,7 @@
     </div>
 
     <script>
+        // Supabase Configuration
         const _supabaseUrl = 'https://bzrycuvpbsxvutqhxowp.supabase.co';
         const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cnljdXZwYnN4dnV0cWh4b3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTk5OTEsImV4cCI6MjA4NjkzNTk5MX0.MI2suZLflcMbc5AbPCRaT7_pT9qQISrsV5dKA63Si8s';
         const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
@@ -163,8 +196,11 @@
             }
         }
 
-        // FUNGSI FETCH DATA UNTUK GRID
+        // FUNGSI UNTUK MENAMPILKAN DATA PADA TABEL
         async function fetchData() {
+            const tableBody = document.getElementById('employeeTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>';
+
             try {
                 const { data, error } = await supabaseClient
                     .from('TH_EMP01M')
@@ -173,27 +209,35 @@
 
                 if (error) throw error;
 
-                const tableBody = document.getElementById('employeeTableBody');
                 tableBody.innerHTML = '';
 
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Tidak ada data ditemukan.</td></tr>';
+                    return;
+                }
+
                 data.forEach(emp => {
-                    const statusText = emp.EMPL_STAT ? 
-                        '<span style="color:green; font-weight:bold;">Active</span>' : 
-                        '<span style="color:red;">In Active</span>';
-                    const levelText = emp.EMPL_LEVL ? 'Admin' : 'User';
+                    const statusDot = emp.EMPL_STAT ? 
+                        '<span style="color:#10b981; font-weight:600;">● Active</span>' : 
+                        '<span style="color:#ef4444; font-weight:600;">● In Active</span>';
+                    
+                    const levelTag = emp.EMPL_LEVL ? 
+                        '<small style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:10px;">Admin</small>' : 
+                        '<small style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px;">User</small>';
 
                     const row = `
                         <tr>
-                            <td>${emp.EMPL_NMBR}</td>
+                            <td style="font-weight:600; color:#3b82f6;">${emp.EMPL_NMBR}</td>
                             <td>${emp.EMPL_NAME}</td>
-                            <td>${statusText}</td>
-                            <td>${levelText}</td>
+                            <td>${statusDot}</td>
+                            <td>${levelText = levelTag}</td>
                         </tr>
                     `;
                     tableBody.innerHTML += row;
                 });
             } catch (err) {
-                console.error("Error fetching:", err.message);
+                console.error("Fetch Error:", err.message);
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Gagal memuat data!</td></tr>';
             }
         }
 
@@ -223,25 +267,28 @@
                 EMPL_LEVL: document.getElementById('empl_levl').value === "1"
             };
 
-            if (!data.EMPL_NAME || !data.EMPL_UNME) return alert("Nama dan Username wajib diisi!");
+            if (!data.EMPL_NAME || !data.EMPL_UNME || !data.EMPL_PSWD) {
+                return alert("Mohon lengkapi Nama, Username, dan Password!");
+            }
 
             try {
                 const { error } = await supabaseClient.from('TH_EMP01M').insert([data]);
                 if (error) throw error;
                 
-                alert("Data Berhasil Disimpan!");
+                alert("Success: Data Karyawan Baru Tersimpan!");
                 setMode('view');
-                fetchData(); // Refresh grid setelah simpan
+                fetchData(); // Refresh tabel setelah simpan
             } catch (err) {
                 alert("Gagal Simpan: " + err.message);
             }
         }
 
+        // LOAD DATA AWAL SAAT HALAMAN DIBUKA
         window.onload = () => {
             if (!localStorage.getItem('userSession')) {
                 window.location.href = 'index.html';
             } else {
-                fetchData(); // Load data saat halaman dibuka
+                fetchData(); // Menampilkan semua data saat load
             }
         };
     </script>
