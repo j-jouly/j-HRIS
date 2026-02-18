@@ -17,7 +17,7 @@
             --slate-200: #e2e8f0;
             --slate-700: #334155;
             --slate-900: #0f172a;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         body { 
@@ -34,35 +34,35 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            padding: 20px; 
+            padding: 15px; 
             box-sizing: border-box; 
-            gap: 15px; 
+            gap: 12px; 
         }
 
-        /* HEADER & TOOLBAR */
+        /* TOOLBAR */
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: white;
-            padding: 10px 20px;
-            border-radius: 12px;
+            padding: 10px 15px;
+            border-radius: 10px;
             box-shadow: var(--shadow);
         }
 
-        .toolbar { display: flex; gap: 8px; }
+        .toolbar { display: flex; gap: 6px; }
 
         .btn-tool {
-            padding: 8px 16px;
+            padding: 7px 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 6px;
+            transition: all 0.2s ease;
         }
 
         .btn-new { background: var(--slate-900); color: white; }
@@ -70,123 +70,113 @@
         .btn-delete { background: #fee2e2; color: #ef4444; }
         .btn-save { background: var(--accent); color: white; }
         .btn-cancel { background: var(--slate-100); color: var(--slate-700); }
-        .btn-home { background: var(--slate-100); color: var(--slate-900); }
+        .btn-home { background: var(--slate-100); color: var(--slate-900); margin-left: 10px; }
 
-        .btn-tool:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(0.95); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .btn-tool:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-tool:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(0.95); }
+        .btn-tool:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* SEARCH BAR */
+        /* SEARCH SECTION */
         .search-card {
             background: white;
-            padding: 15px 20px;
-            border-radius: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             box-shadow: var(--shadow);
             align-items: flex-end;
         }
 
-        .input-group { display: flex; flex-direction: column; gap: 5px; flex: 1; }
-        .input-group label { font-size: 11px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .input-group label { font-size: 10px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; }
         .input-group input, .input-group select {
-            padding: 10px;
+            padding: 8px;
             border: 1px solid var(--slate-200);
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 6px;
+            font-size: 12px;
             outline: none;
-            transition: border 0.2s;
         }
-        .input-group input:focus { border-color: var(--blue); }
 
-        /* MAIN CONTENT */
-        .content-grid { display: grid; grid-template-columns: 1fr 400px; gap: 15px; flex: 1; overflow: hidden; }
+        /* MAIN CONTENT - RESIZED GRID */
+        .content-grid { 
+            display: grid; 
+            grid-template-columns: 0.8fr 1.2fr; /* 40% Tabel : 60% Form */
+            gap: 12px; 
+            flex: 1; 
+            overflow: hidden; 
+        }
 
-        .card { background: white; border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
+        .card { background: white; border-radius: 10px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
         
-        /* TABLE STYLING */
+        /* TABLE STYLING - COMPACT */
         .table-container { overflow-y: auto; flex: 1; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
         th { 
             background: var(--slate-50); 
-            padding: 15px; 
+            padding: 10px; 
             text-align: left; 
-            font-size: 12px; 
+            font-size: 11px; 
             font-weight: 600; 
-            color: var(--slate-700); 
-            position: sticky; 
-            top: 0; 
-            z-index: 10;
+            position: sticky; top: 0; z-index: 10;
             border-bottom: 1px solid var(--slate-200);
         }
-        td { padding: 12px 15px; font-size: 13px; border-bottom: 1px solid var(--slate-100); }
+        td { padding: 10px; font-size: 12px; border-bottom: 1px solid var(--slate-100); }
         tr:hover td { background: var(--blue-soft); cursor: pointer; }
         
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
         .badge-active { background: var(--accent-soft); color: var(--accent); }
         .badge-inactive { background: #fee2e2; color: #ef4444; }
 
-        /* FORM ENTRY */
+        /* FORM ENTRY - 2 COLUMNS */
         .form-container { padding: 20px; overflow-y: auto; }
-        .form-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--slate-900); display: flex; align-items: center; gap: 10px; }
-        .form-title::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 10px; }
+        .form-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .form-title::before { content: ''; width: 3px; height: 16px; background: var(--accent); border-radius: 10px; }
         
-        .form-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .field-label { font-size: 12px; font-weight: 600; color: var(--slate-700); margin-bottom: 5px; display: block; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        .field-label { font-size: 11px; font-weight: 600; color: var(--slate-700); margin-bottom: 4px; display: block; }
         .field-input {
             width: 100%;
-            padding: 10px;
+            padding: 9px;
             border: 1px solid var(--slate-200);
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 13px;
             box-sizing: border-box;
             font-family: inherit;
         }
-        .field-input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
-        .field-input:disabled { background: var(--slate-50); color: var(--slate-700); }
+        .field-input:focus { border-color: var(--accent); outline: none; }
+        .field-input:disabled { background: var(--slate-50); color: #94a3b8; }
     </style>
 </head>
 <body>
 
     <div class="master-layout">
         <div class="header-section">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="background: var(--accent); width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: white; font-weight: bold;">G</div>
-                <span style="font-weight: 700; font-size: 18px; letter-spacing: -0.5px;">G-PRO <span style="font-weight: 300; color: var(--gray);">Master</span></span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="background: var(--accent); width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; color: white; font-weight: bold; font-size: 14px;">G</div>
+                <span style="font-weight: 700; font-size: 16px;">G-PRO <span style="font-weight: 300; color: var(--gray);">Master</span></span>
             </div>
             <div class="toolbar">
-                <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">+ New Employee</button>
-                <button id="btnModify" class="btn-tool btn-modify" disabled>Edit</button>
+                <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">+ New</button>
+                <button id="btnModify" class="btn-tool btn-modify" disabled>Modify</button>
                 <button id="btnDelete" class="btn-tool btn-delete" disabled>Delete</button>
-                <div style="width: 1px; height: 20px; background: var(--slate-200); margin: 0 5px;"></div>
-                <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>Save Changes</button>
+                <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>Save</button>
                 <button id="btnCancel" class="btn-tool btn-cancel" onclick="cancelAction()" disabled>Cancel</button>
                 <button class="btn-tool btn-home" onclick="window.location.href='dashboard.html'">Home</button>
             </div>
         </div>
 
         <div class="search-card">
-            <div class="input-group">
-                <label>Employee Code</label>
-                <input type="text" id="search_kode" placeholder="Ex: GPro.001">
-            </div>
-            <div class="input-group">
-                <label>Full Name</label>
-                <input type="text" id="search_nama" placeholder="Search name...">
-            </div>
+            <div class="input-group"><label>Code</label><input type="text" id="search_kode" placeholder="Search code..."></div>
+            <div class="input-group"><label>Name</label><input type="text" id="search_nama" placeholder="Search name..."></div>
             <div class="input-group">
                 <label>Status</label>
                 <select id="search_status">
-                    <option value="">All Status</option>
+                    <option value="">All</option>
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                 </select>
             </div>
-            <button class="btn-tool btn-new" style="height: 40px;" onclick="fetchData()">Apply Filter</button>
+            <button class="btn-tool btn-new" style="height: 35px;" onclick="fetchData()">Apply</button>
         </div>
 
         <div class="content-grid">
@@ -196,25 +186,23 @@
                         <thead>
                             <tr>
                                 <th>CODE</th>
-                                <th>FULL NAME</th>
+                                <th>NAME</th>
                                 <th>STATUS</th>
-                                <th>ROLE</th>
                             </tr>
                         </thead>
-                        <tbody id="employeeTableBody">
-                            </tbody>
+                        <tbody id="employeeTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
             <div class="card">
                 <div class="form-container">
-                    <div class="form-title">Employee Details</div>
+                    <div class="form-title">Employee Information</div>
                     <form id="employeeForm">
                         <div class="form-grid">
                             <div>
                                 <label class="field-label">Employee ID</label>
-                                <input type="text" id="empl_nmbr" class="field-input" readonly style="font-weight: 600; color: var(--blue);">
+                                <input type="text" id="empl_nmbr" class="field-input" readonly>
                             </div>
                             <div>
                                 <label class="field-label">Status</label>
@@ -223,28 +211,26 @@
                                     <option value="0">Inactive</option>
                                 </select>
                             </div>
-                            <div>
+                            <div class="full-width">
                                 <label class="field-label">Full Name</label>
                                 <input type="text" id="empl_name" class="field-input" disabled>
                             </div>
-                            <div>
+                            <div class="full-width">
                                 <label class="field-label">Address</label>
-                                <textarea id="empl_addr" class="field-input" rows="3" style="resize: none;" disabled></textarea>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <label class="field-label">Username</label>
-                                    <input type="text" id="empl_unme" class="field-input" disabled>
-                                </div>
-                                <div>
-                                    <label class="field-label">Role</label>
-                                    <select id="empl_levl" class="field-input" disabled>
-                                        <option value="0">User</option>
-                                        <option value="1">Administrator</option>
-                                    </select>
-                                </div>
+                                <textarea id="empl_addr" class="field-input" rows="2" style="resize: none;" disabled></textarea>
                             </div>
                             <div>
+                                <label class="field-label">Username</label>
+                                <input type="text" id="empl_unme" class="field-input" disabled>
+                            </div>
+                            <div>
+                                <label class="field-label">Access Level</label>
+                                <select id="empl_levl" class="field-input" disabled>
+                                    <option value="0">User</option>
+                                    <option value="1">Administrator</option>
+                                </select>
+                            </div>
+                            <div class="full-width">
                                 <label class="field-label">Password</label>
                                 <input type="password" id="empl_pswd" class="field-input" disabled>
                             </div>
@@ -261,57 +247,45 @@
         const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
 
         let currentMode = 'VIEW';
-        const formInputIDs = ['empl_name', 'empl_addr', 'empl_unme', 'empl_pswd', 'empl_stat', 'empl_levl'];
+        const inputIDs = ['empl_name', 'empl_addr', 'empl_unme', 'empl_pswd', 'empl_stat', 'empl_levl'];
 
         function setMode(mode) {
             currentMode = mode;
             const isEdit = (mode === 'NEW' || mode === 'EDIT');
-            
             document.getElementById('btnNew').disabled = isEdit;
             document.getElementById('btnModify').disabled = isEdit || mode === 'EMPTY';
             document.getElementById('btnDelete').disabled = isEdit || mode === 'EMPTY';
             document.getElementById('btnSave').disabled = !isEdit;
             document.getElementById('btnCancel').disabled = !isEdit;
-
-            formInputIDs.forEach(id => document.getElementById(id).disabled = !isEdit);
+            inputIDs.forEach(id => document.getElementById(id).disabled = !isEdit);
         }
 
         async function fetchData() {
             const tableBody = document.getElementById('employeeTableBody');
-            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #94a3b8;">Loading data...</td></tr>';
-
-            const s_kode = document.getElementById('search_kode').value;
-            const s_nama = document.getElementById('search_nama').value;
-            const s_stat = document.getElementById('search_status').value;
-
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; color: #94a3b8;">Loading...</td></tr>';
             try {
-                let query = supabaseClient.from('TH_EMP01M').select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL');
+                let query = supabaseClient.from('TH_EMP01M').select('EMPL_NMBR, EMPL_NAME, EMPL_STAT');
+                const s_kode = document.getElementById('search_kode').value;
+                const s_nama = document.getElementById('search_nama').value;
+                const s_stat = document.getElementById('search_status').value;
                 if (s_kode) query = query.ilike('EMPL_NMBR', `%${s_kode}%`);
                 if (s_nama) query = query.ilike('EMPL_NAME', `%${s_nama}%`);
                 if (s_stat !== "") query = query.eq('EMPL_STAT', s_stat === "1");
 
                 const { data, error } = await query.order('EMPL_NMBR', { ascending: true });
                 if (error) throw error;
-
                 tableBody.innerHTML = '';
                 data.forEach(emp => {
-                    const statusBadge = emp.EMPL_STAT ? '<span class="badge badge-active">Active</span>' : '<span class="badge badge-inactive">Inactive</span>';
-                    tableBody.innerHTML += `
-                        <tr onclick="getDetail('${emp.EMPL_NMBR}')">
-                            <td style="font-weight: 600;">${emp.EMPL_NMBR}</td>
-                            <td>${emp.EMPL_NAME}</td>
-                            <td>${statusBadge}</td>
-                            <td>${emp.EMPL_LEVL ? 'Admin' : 'User'}</td>
-                        </tr>`;
+                    const badge = emp.EMPL_STAT ? '<span class="badge badge-active">Active</span>' : '<span class="badge badge-inactive">Inactive</span>';
+                    tableBody.innerHTML += `<tr onclick="getDetail('${emp.EMPL_NMBR}')"><td>${emp.EMPL_NMBR}</td><td>${emp.EMPL_NAME}</td><td>${badge}</td></tr>`;
                 });
-            } catch (err) { alert("Error loading data: " + err.message); }
+            } catch (err) { console.error(err); }
         }
 
         async function getDetail(id) {
             try {
                 const { data, error } = await supabaseClient.from('TH_EMP01M').select('*').eq('EMPL_NMBR', id).single();
                 if (error) throw error;
-
                 document.getElementById('empl_nmbr').value = data.EMPL_NMBR;
                 document.getElementById('empl_name').value = data.EMPL_NAME;
                 document.getElementById('empl_unme').value = data.EMPL_UNME;
@@ -319,7 +293,6 @@
                 document.getElementById('empl_addr').value = data.EMPL_ADDR;
                 document.getElementById('empl_stat').value = data.EMPL_STAT ? "1" : "0";
                 document.getElementById('empl_levl').value = data.EMPL_LEVL ? "1" : "0";
-
                 setMode('VIEW');
                 document.getElementById('btnModify').onclick = () => setMode('EDIT');
                 document.getElementById('btnDelete').onclick = () => doDelete(data.EMPL_NMBR);
@@ -343,39 +316,28 @@
                 EMPL_STAT: document.getElementById('empl_stat').value === "1",
                 EMPL_LEVL: document.getElementById('empl_levl').value === "1"
             };
-
             try {
-                let res;
-                if (currentMode === 'NEW') res = await supabaseClient.from('TH_EMP01M').insert([payload]);
-                else res = await supabaseClient.from('TH_EMP01M').update(payload).eq('EMPL_NMBR', payload.EMPL_NMBR);
-
+                let res = currentMode === 'NEW' ? await supabaseClient.from('TH_EMP01M').insert([payload]) : await supabaseClient.from('TH_EMP01M').update(payload).eq('EMPL_NMBR', payload.EMPL_NMBR);
                 if (res.error) throw res.error;
-                alert("Success! Data has been saved.");
+                alert("Saved!");
                 fetchData();
                 cancelAction();
             } catch (err) { alert(err.message); }
         }
 
         async function doDelete(id) {
-            if (!confirm(`Are you sure you want to delete ${id}?`)) return;
-            const { error } = await supabaseClient.from('TH_EMP01M').delete().eq('EMPL_NMBR', id);
-            if (!error) {
-                alert("Data deleted successfully.");
-                fetchData();
-                cancelAction();
+            if (confirm(`Delete ${id}?`)) {
+                const { error } = await supabaseClient.from('TH_EMP01M').delete().eq('EMPL_NMBR', id);
+                if (!error) { fetchData(); cancelAction(); }
             }
         }
 
         function cancelAction() {
             setMode('EMPTY');
             document.getElementById('employeeForm').reset();
-            document.getElementById('empl_nmbr').value = '';
         }
 
-        window.onload = () => {
-            fetchData();
-            setMode('EMPTY');
-        };
+        window.onload = () => { fetchData(); setMode('EMPTY'); };
     </script>
 </body>
 </html>
