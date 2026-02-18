@@ -1,369 +1,169 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Employee - Production Final</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body { background: #f4f7f9; overflow: hidden; margin: 0; font-family: 'Poppins', sans-serif; }
-        .master-layout { display: flex; flex-direction: column; height: 100vh; padding: 15px; box-sizing: border-box; gap: 10px; }
-        
-        /* TOOLBAR & HOVER EFFECTS */
-        .toolbar { background: white; padding: 12px 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        
-        .btn-tool { 
-            padding: 8px 15px; 
-            border: none; 
-            border-radius: 4px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            font-size: 13px; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+// Supabase Configuration
+const _supabaseUrl = 'https://bzrycuvpbsxvutqhxowp.supabase.co';
+const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cnljdXZwYnN4dnV0cWh4b3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTk5OTEsImV4cCI6MjA4NjkzNTk5MX0.MI2suZLflcMbc5AbPCRaT7_pT9qQISrsV5dKA63Si8s';
+const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
+
+const btnNav = ['btnNew', 'btnModify', 'btnDelete', 'btnSearch'];
+const btnAct = ['btnSave', 'btnCancel', 'btnAddDetail', 'btnRemoveDetail'];
+const formInputs = ['empl_unme', 'empl_pswd', 'empl_name', 'empl_addr', 'empl_stat', 'empl_levl'];
+
+// Variabel untuk melacak apakah sedang mode Tambah atau Edit
+let currentMode = 'VIEW'; 
+
+function setMode(mode) {
+    currentMode = mode.toUpperCase();
+    const isEdit = currentMode === 'EDIT' || currentMode === 'NEW';
+    
+    // Toggle Buttons
+    btnNav.forEach(id => document.getElementById(id).disabled = isEdit);
+    btnAct.forEach(id => document.getElementById(id).disabled = !isEdit);
+    
+    // Toggle Inputs
+    formInputs.forEach(id => document.getElementById(id).disabled = !isEdit);
+
+    if (currentMode === 'VIEW') {
+        // Jangan reset form di sini jika ingin data tetap tampil setelah klik tabel
+        // Reset hanya dilakukan saat batal atau setelah simpan sukses
+    }
+}
+
+async function fetchData() {
+    const tableBody = document.getElementById('employeeTableBody');
+    const s_kode = document.getElementById('search_kode').value;
+    const s_nama = document.getElementById('search_nama').value;
+    const s_stat = document.getElementById('search_status').value;
+
+    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">🔍 Mencari data...</td></tr>';
+
+    try {
+        let query = supabaseClient.from('TH_EMP01M').select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL');
+
+        if (s_kode) query = query.ilike('EMPL_NMBR', `%${s_kode}%`);
+        if (s_nama) query = query.ilike('EMPL_NAME', `%${s_nama}%`);
+        if (s_stat !== "") query = query.eq('EMPL_STAT', s_stat === "1");
+
+        const { data, error } = await query.order('EMPL_NMBR', { ascending: true });
+        if (error) throw error;
+
+        tableBody.innerHTML = '';
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Data tidak ditemukan.</td></tr>';
+            return;
         }
 
-        /* Hover Animation */
-        .btn-tool:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            filter: brightness(1.1);
-        }
-
-        .btn-tool:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-new { background: #3ecf8e; color: white; }
-        .btn-modify { background: #3b82f6; color: white; }
-        .btn-delete { background: #ef4444; color: white; }
-        .btn-search { background: #64748b; color: white; }
-        .btn-save { background: #10b981; color: white; }
-        .btn-cancel { background: #f59e0b; color: white; }
-        .btn-detail { background: #7e22ce; color: white; }
-        .btn-remove { background: #be185d; color: white; }
-        .btn-back { background: #1a202c; color: white; margin-left: auto; }
-        
-        .btn-tool:disabled { background-color: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.7; transform: none !important; box-shadow: none !important; }
-
-        /* SEARCH AREA */
-        .search-area { background: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 20px; border: 1px solid #e2e8f0; }
-        .search-group { display: flex; flex-direction: column; gap: 5px; }
-        .search-group label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
-        .search-group input { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; min-width: 160px; }
-
-        /* MAIN CONTENT */
-        .main-content { display: flex; flex: 1; gap: 15px; overflow: hidden; }
-        .grid-area { flex: 1; background: white; border-radius: 8px; overflow-y: auto; border: 1px solid #e2e8f0; }
-        
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f8fafc; position: sticky; top: 0; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #475569; z-index: 5; }
-        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-        
-        tr { transition: background 0.2s; cursor: pointer; }
-        tr:hover { background: #f8fafc; }
-
-        .entry-area { flex: 1.2; background: white; border-radius: 8px; padding: 20px; overflow-y: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group.full { grid-column: span 2; }
-        .form-group label { font-size: 12px; font-weight: 600; color: #64748b; }
-        .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; }
-        
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-    </style>
-</head>
-<body>
-
-    <div class="master-layout">
-        <div class="toolbar">
-            <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">➕ New</button>
-            <button id="btnModify" class="btn-tool btn-modify" onclick="alert('Pilih data di tabel terlebih dahulu untuk Modify')">📝 Modify</button>
-            <button id="btnDelete" class="btn-tool btn-delete">🗑️ Delete</button>
-            <button id="btnSearch" class="btn-tool btn-search" onclick="fetchData()">🔍 Search</button>
+        data.forEach(emp => {
+            const statusDot = emp.EMPL_STAT ? '<span style="color:#10b981;">● Active</span>' : '<span style="color:#ef4444;">● In Active</span>';
+            const levelTag = emp.EMPL_LEVL ? '<small style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:10px;">Admin</small>' : '<small style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px;">User</small>';
             
-            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
-            
-            <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>💾 Save</button>
-            <button id="btnCancel" class="btn-tool btn-cancel" onclick="setMode('view')" disabled>❌ Cancel</button>
-            
-            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
-            
-            <button id="btnAddDetail" class="btn-tool btn-detail" disabled>📂 Add Detail</button>
-            <button id="btnRemoveDetail" class="btn-tool btn-remove" disabled>➖ Remove Detail</button>
-            
-            <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
-        </div>
+            tableBody.innerHTML += `
+                <tr onclick="getDetail('${emp.EMPL_NMBR}')">
+                    <td style="font-weight:600; color:#3b82f6;">${emp.EMPL_NMBR}</td>
+                    <td>${emp.EMPL_NAME}</td>
+                    <td>${statusDot}</td>
+                    <td>${levelTag}</td>
+                </tr>`;
+        });
+    } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan="4" style="color:red; text-align:center;">Error: ${err.message}</td></tr>`;
+    }
+}
 
-        <div class="search-area">
-            <div class="search-group"><label>Kode</label><input type="text" id="search_kode" placeholder="Cari Kode..."></div>
-            <div class="search-group"><label>Nama</label><input type="text" id="search_nama" placeholder="Cari Nama..."></div>
-            <div class="search-group">
-                <label>Status</label>
-                <select id="search_status" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px;">
-                    <option value="">-- Semua --</option>
-                    <option value="1">Active</option>
-                    <option value="0">In Active</option>
-                </select>
-            </div>
-        </div>
+async function getDetail(id) {
+    try {
+        const { data, error } = await supabaseClient.from('TH_EMP01M').select('*').eq('EMPL_NMBR', id).single();
+        if (error) throw error;
 
-        <div class="main-content">
-            <div class="grid-area">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Status</th>
-                            <th>Level</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody">
-                        </tbody>
-                </table>
-            </div>
+        // Isi Form
+        document.getElementById('empl_nmbr').value = data.EMPL_NMBR || "";
+        document.getElementById('empl_name').value = data.EMPL_NAME || "";
+        document.getElementById('empl_unme').value = data.EMPL_UNME || "";
+        document.getElementById('empl_pswd').value = data.EMPL_PSWD || "";
+        document.getElementById('empl_addr').value = data.EMPL_ADDR || "";
+        document.getElementById('empl_stat').value = data.EMPL_STAT ? "1" : "0";
+        document.getElementById('empl_levl').value = data.EMPL_LEVL ? "1" : "0";
 
-            <div class="entry-area">
-                <h3 style="margin-top:0; border-bottom: 2px solid #3ecf8e; display:inline-block; padding-bottom: 5px; color: #1e293b;">Data Entry</h3>
-                <form id="employeeForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nomor Karyawan</label>
-                            <input type="text" id="empl_nmbr" readonly style="background: #f1f5f9; color: #64748b; font-weight: bold;">
-                        </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select id="empl_stat" disabled>
-                                <option value="1">1 : Active</option>
-                                <option value="0">0 : In Active</option>
-                            </select>
-                        </div>
+        // Set ke mode VIEW (input terkunci)
+        setMode('VIEW');
+        
+        // Aktifkan tombol Modify & Delete
+        document.getElementById('btnModify').disabled = false;
+        document.getElementById('btnDelete').disabled = false;
+        // Ganti onclick alert menjadi fungsi modify
+        document.getElementById('btnModify').onclick = () => setMode('EDIT');
 
-                        <div class="form-group full">
-                            <label>Nama Lengkap</label>
-                            <input type="text" id="empl_name" disabled placeholder="Nama Karyawan sesuai KTP">
-                        </div>
-                        <div class="form-group full">
-                            <label>Alamat</label>
-                            <textarea id="empl_addr" rows="2" style="resize:none;" placeholder="Masukan Alamat Lengkap" disabled></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Level Akses</label>
-                            <select id="empl_levl" disabled>
-                                <option value="0">User</option>
-                                <option value="1">Admin</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="empl_unme" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="empl_pswd" disabled>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    } catch (err) {
+        alert("Gagal ambil detail: " + err.message);
+    }
+}
 
-    <script>
-        // Supabase Configuration
-        const _supabaseUrl = 'https://bzrycuvpbsxvutqhxowp.supabase.co';
-        const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cnljdXZwYnN4dnV0cWh4b3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTk5OTEsImV4cCI6MjA4NjkzNTk5MX0.MI2suZLflcMbc5AbPCRaT7_pT9qQISrsV5dKA63Si8s';
-        const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
+async function startNew() {
+    document.getElementById('employeeForm').reset();
+    setMode('NEW');
+    try {
+        const { count, error } = await supabaseClient.from('TH_EMP01M').select('*', { count: 'exact', head: true });
+        if (error) throw error;
+        const nextNo = (count || 0) + 1;
+        document.getElementById('empl_nmbr').value = `GPro.${String(nextNo).padStart(3, '0')}`;
+    } catch (err) {
+        alert("Gagal generate nomor: " + err.message);
+    }
+}
 
-        const btnNav = ['btnNew', 'btnModify', 'btnDelete', 'btnSearch'];
-        const btnAct = ['btnSave', 'btnCancel', 'btnAddDetail', 'btnRemoveDetail'];
-        const formInputs = ['empl_unme', 'empl_pswd', 'empl_name', 'empl_addr', 'empl_stat', 'empl_levl'];
+async function saveData() {
+    const data = {
+        EMPL_NMBR: document.getElementById('empl_nmbr').value,
+        EMPL_NAME: document.getElementById('empl_name').value,
+        EMPL_UNME: document.getElementById('empl_unme').value,
+        EMPL_PSWD: document.getElementById('empl_pswd').value,
+        EMPL_ADDR: document.getElementById('empl_addr').value,
+        EMPL_STAT: document.getElementById('empl_stat').value === "1",
+        EMPL_LEVL: document.getElementById('empl_levl').value === "1"
+    };
 
-        function setMode(mode) {
-            const isEdit = mode === 'edit';
-            btnNav.forEach(id => document.getElementById(id).disabled = isEdit);
-            btnAct.forEach(id => document.getElementById(id).disabled = !isEdit);
-            formInputs.forEach(id => document.getElementById(id).disabled = !isEdit);
-            if (!isEdit) {
-                document.getElementById('employeeForm').reset();
-                document.getElementById('empl_nmbr').value = '';
-            }
+    if (!data.EMPL_NAME || !data.EMPL_UNME || !data.EMPL_PSWD) {
+        return alert("Mohon lengkapi Nama, Username, dan Password!");
+    }
+
+    try {
+        let result;
+        if (currentMode === 'NEW') {
+            result = await supabaseClient.from('TH_EMP01M').insert([data]);
+        } else {
+            // Mode EDIT: Update berdasarkan EMPL_NMBR
+            result = await supabaseClient.from('TH_EMP01M').update(data).eq('EMPL_NMBR', data.EMPL_NMBR);
         }
 
-        // FUNGSI UNTUK MENAMPILKAN DATA PADA TABEL
-        /**
-         * Fungsi Fetch Data dengan fitur Filter
-         * Mengambil data secara Async dari Supabase
-         */
-        async function fetchData() {
-            const tableBody = document.getElementById('employeeTableBody');
-            
-            // Ambil nilai dari input pencarian
-            const s_kode = document.getElementById('search_kode').value;
-            const s_nama = document.getElementById('search_nama').value;
-            const s_stat = document.getElementById('search_status').value;
+        if (result.error) throw result.error;
         
-            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">🔍 Mencari data...</td></tr>';
-        
-            try {
-                // 1. Inisialisasi Query
-                let query = supabaseClient
-                    .from('TH_EMP01M')
-                    .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL');
-        
-                // 2. Tambahkan Filter jika input terisi (ILike = Case Insensitive search)
-                if (s_kode) query = query.ilike('EMPL_NMBR', `%${s_kode}%`);
-                if (s_nama) query = query.ilike('EMPL_NAME', `%${s_nama}%`);
-                if (s_stat !== "") query = query.eq('EMPL_STAT', s_stat === "1");
-        
-                // 3. Eksekusi Query dengan urutan terbaru di atas
-                //const { data, error } = await query.order('create_at', { ascending: false });
-                const { data, error } = await query.order('EMPL_NMBR', { ascending: true });
-        
-                if (error) throw error;
-        
-                // 4. Render ke Tabel
-                tableBody.innerHTML = '';
-                if (data.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Data tidak ditemukan.</td></tr>';
-                    return;
-                }
-        
-                data.forEach(emp => {
-                    const statusDot = emp.EMPL_STAT ? 
-                        '<span style="color:#10b981; font-weight:600;">● Active</span>' : 
-                        '<span style="color:#ef4444; font-weight:600;">● In Active</span>';
-                    
-                    const levelTag = emp.EMPL_LEVL ? 
-                        '<small style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:10px;">Admin</small>' : 
-                        '<small style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px;">User</small>';
-        
-                    const row = `
-                        <tr onclick="getDetail('${emp.EMPL_NMBR}')" title="Klik untuk lihat detail">
-                            <td style="font-weight:600; color:#3b82f6;">${emp.EMPL_NMBR}</td>
-                            <td>${emp.EMPL_NAME}</td>
-                            <td>${statusDot}</td>
-                            <td>${levelTag}</td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                });
-        
-            } catch (err) {
-                console.error("Fetch Error:", err.message);
-                tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal: ${err.message}</td></tr>`;
-            }
-        }
-        
-        /**
-         * FUNGSI GET DETAIL
-         * Mengambil data lengkap 1 karyawan saat baris tabel diklik
-         */
-        async function getDetail(id) {
-            try {
-                console.log("Mengambil detail untuk ID:", id);
-        
-                const { data, error } = await supabaseClient
-                    .from('TH_EMP01M')
-                    .select('*')
-                    .eq('EMPL_NMBR', id)
-                    .single();
-        
-                if (error) throw error;
-                
-                console.log("Data ditemukan:", data);
-        
-                // MENGISI FORM (Pastikan ID di dokumen HTML Anda sama persis dengan ini)
-                // Gunakan Optional Chaining atau nilai default "" untuk menghindari error
-                const f = {
-                    nmbr: document.getElementById('empl_nmbr'),
-                    name: document.getElementById('empl_name'),
-                    unme: document.getElementById('empl_unme'),
-                    pswd: document.getElementById('empl_pswd'),
-                    addr: document.getElementById('empl_addr'),
-                    stat: document.getElementById('empl_stat'),
-                    levl: document.getElementById('empl_levl')
-                };
-        
-                if(f.nmbr) f.nmbr.value = data.EMPL_NMBR || "";
-                if(f.name) f.name.value = data.EMPL_NAME || "";
-                if(f.unme) f.unme.value = data.EMPL_UNME || "";
-                if(f.pswd) f.pswd.value = data.EMPL_PSWD || "";
-                if(f.addr) f.addr.value = data.EMPL_ADDR || "";
-                
-                // Mapping Boolean ke String Select ("1" atau "0")
-                if(f.stat) f.stat.value = data.EMPL_STAT ? "1" : "0";
-                if(f.levl) f.levl.value = data.EMPL_LEVL ? "1" : "0";
-        
-                // Masuk ke View Mode (kunci input)
-                setMode('view');
-        
-                // Nyalakan tombol navigasi lanjutan
-                document.getElementById('btnModify').disabled = false;
-                document.getElementById('btnDelete').disabled = false;
-        
-            } catch (err) {
-                console.error("Gagal ambil detail:", err.message);
-                alert("Gagal mengambil detail: " + err.message);
-            }
-        }
-        
-        async function startNew() {
-            setMode('edit');
-            try {
-                const { count, error } = await supabaseClient
-                    .from('TH_EMP01M')
-                    .select('*', { count: 'exact', head: true });
-                
-                if (error) throw error;
-                const nextNo = (count || 0) + 1;
-                document.getElementById('empl_nmbr').value = `GPro.${String(nextNo).padStart(3, '0')}`;
-            } catch (err) {
-                alert("Gagal generate nomor: " + err.message);
-            }
-        }
+        alert("Data Berhasil Disimpan!");
+        setMode('VIEW');
+        fetchData();
+    } catch (err) {
+        alert("Gagal Simpan: " + err.message);
+    }
+}
 
-        async function saveData() {
-            const data = {
-                EMPL_NMBR: document.getElementById('empl_nmbr').value,
-                EMPL_NAME: document.getElementById('empl_name').value,
-                EMPL_UNME: document.getElementById('empl_unme').value,
-                EMPL_PSWD: document.getElementById('empl_pswd').value,
-                EMPL_ADDR: document.getElementById('empl_addr').value,
-                EMPL_STAT: document.getElementById('empl_stat').value === "1",
-                EMPL_LEVL: document.getElementById('empl_levl').value === "1"
-            };
+// Tambahkan fungsi delete untuk melengkapi
+document.getElementById('btnDelete').onclick = async () => {
+    const id = document.getElementById('empl_nmbr').value;
+    if (!id || !confirm(`Hapus karyawan ${id}?`)) return;
 
-            if (!data.EMPL_NAME || !data.EMPL_UNME || !data.EMPL_PSWD) {
-                return alert("Mohon lengkapi Nama, Username, dan Password!");
-            }
+    try {
+        const { error } = await supabaseClient.from('TH_EMP01M').delete().eq('EMPL_NMBR', id);
+        if (error) throw error;
+        alert("Data Terhapus");
+        document.getElementById('employeeForm').reset();
+        fetchData();
+        setMode('VIEW');
+    } catch (err) {
+        alert(err.message);
+    }
+};
 
-            try {
-                const { error } = await supabaseClient.from('TH_EMP01M').insert([data]);
-                if (error) throw error;
-                
-                alert("Success: Data Karyawan Baru Tersimpan!");
-                setMode('view');
-                fetchData(); // Refresh tabel setelah simpan
-            } catch (err) {
-                alert("Gagal Simpan: " + err.message);
-            }
-        }
-
-        // LOAD DATA AWAL SAAT HALAMAN DIBUKA
-        window.onload = () => {
-            if (!localStorage.getItem('userSession')) {
-                window.location.href = 'index.html';
-            } else {
-                fetchData(); // Menampilkan semua data saat load
-            }
-        };
-    </script>
-</body>
-</html>
+window.onload = () => {
+    if (!localStorage.getItem('userSession')) {
+        window.location.href = 'index.html';
+    } else {
+        fetchData();
+    }
+};
