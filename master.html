@@ -267,7 +267,7 @@
          */
         async function getDetail(id) {
             try {
-                console.log("Mengambil detail untuk ID:", id); // Cek di F12 jika ID terkirim
+                console.log("Mengambil detail untuk ID:", id);
         
                 const { data, error } = await supabaseClient
                     .from('TH_EMP01M')
@@ -277,23 +277,34 @@
         
                 if (error) throw error;
                 
-                console.log("Data ditemukan:", data); // Cek apakah data muncul di Console
+                console.log("Data ditemukan:", data);
         
-                // Isi data ke form (Pastikan ID elemen HTML sesuai)
-                document.getElementById('empl_nmbr').value = data.EMPL_NMBR || "";
-                document.getElementById('empl_name').value = data.EMPL_NAME || "";
-                document.getElementById('empl_unme').value = data.EMPL_UNME || "";
-                document.getElementById('empl_pswd').value = data.EMPL_PSWD || "";
-                document.getElementById('empl_addr').value = data.EMPL_ADDR || "";
+                // MENGISI FORM (Pastikan ID di dokumen HTML Anda sama persis dengan ini)
+                // Gunakan Optional Chaining atau nilai default "" untuk menghindari error
+                const f = {
+                    nmbr: document.getElementById('empl_nmbr'),
+                    name: document.getElementById('empl_name'),
+                    unme: document.getElementById('empl_unme'),
+                    pswd: document.getElementById('empl_pswd'),
+                    addr: document.getElementById('empl_addr'),
+                    stat: document.getElementById('empl_stat'),
+                    levl: document.getElementById('empl_levl')
+                };
+        
+                if(f.nmbr) f.nmbr.value = data.EMPL_NMBR || "";
+                if(f.name) f.name.value = data.EMPL_NAME || "";
+                if(f.unme) f.unme.value = data.EMPL_UNME || "";
+                if(f.pswd) f.pswd.value = data.EMPL_PSWD || "";
+                if(f.addr) f.addr.value = data.EMPL_ADDR || "";
                 
-                // Mapping Boolean ke String "1" atau "0" untuk Select Box
-                document.getElementById('empl_stat').value = data.EMPL_STAT ? "1" : "0";
-                document.getElementById('empl_levl').value = data.EMPL_LEVL ? "1" : "0";
+                // Mapping Boolean ke String Select ("1" atau "0")
+                if(f.stat) f.stat.value = data.EMPL_STAT ? "1" : "0";
+                if(f.levl) f.levl.value = data.EMPL_LEVL ? "1" : "0";
         
-                // Kunci form kembali (View Mode)
+                // Masuk ke View Mode (kunci input)
                 setMode('view');
         
-                // AKTIFKAN tombol Modify & Delete setelah data terpilih
+                // Nyalakan tombol navigasi lanjutan
                 document.getElementById('btnModify').disabled = false;
                 document.getElementById('btnDelete').disabled = false;
         
@@ -302,6 +313,7 @@
                 alert("Gagal mengambil detail: " + err.message);
             }
         }
+        
         async function startNew() {
             setMode('edit');
             try {
