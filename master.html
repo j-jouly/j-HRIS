@@ -223,7 +223,8 @@
                 if (s_stat !== "") query = query.eq('EMPL_STAT', s_stat === "1");
         
                 // 3. Eksekusi Query dengan urutan terbaru di atas
-                const { data, error } = await query.order('create_at', { ascending: false });
+                //const { data, error } = await query.order('create_at', { ascending: false });
+                const { data, error } = await query.order('EMPL_NMBR', { ascending: true });
         
                 if (error) throw error;
         
