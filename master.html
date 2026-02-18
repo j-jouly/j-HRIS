@@ -18,6 +18,10 @@
             --slate-700: #334155;
             --slate-900: #0f172a;
             --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        /* Tambahan Warna Merah */
+            --danger: #ef4444; 
+            --danger-hover: #dc2626;
+                    
         }
 
         body { 
@@ -70,7 +74,7 @@
         .btn-delete { background: #fee2e2; color: #ef4444; }
         .btn-save { background: var(--accent); color: white; }
         .btn-cancel { background: var(--slate-100); color: var(--slate-700); }
-        .btn-home { background: var(--slate-100); color: var(--slate-900); margin-left: 10px; }
+        .btn-home { background: var(--slate-100); color: var(--danger); margin-left: 10px; }
 
         .btn-tool:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(0.95); }
         .btn-tool:disabled { opacity: 0.3; cursor: not-allowed; }
@@ -156,7 +160,7 @@
                 <span style="font-weight: 700; font-size: 16px;">G-PRO <span style="font-weight: 300; color: var(--gray);">Master</span></span>
             </div>
             <div class="toolbar">
-                <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">🧔New</button>
+                <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">🧔 New</button>
                 <button id="btnModify" class="btn-tool btn-modify" disabled>📝 Modify</button>
                 <button id="btnDelete" class="btn-tool btn-delete" disabled>⛔ Delete</button>
                 <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>💾 Save</button>
