@@ -19,7 +19,7 @@
         .btn-delete { background: #ef4444; color: white; }
         .btn-search { background: #64748b; color: white; }
         .btn-save { background: #10b981; color: white; }
-        .btn-cancel { background: #94a3b8; color: white; }
+        .btn-cancel { background: #f59e0b; color: white; }
         .btn-detail { background: #7e22ce; color: white; }
         .btn-remove { background: #be185d; color: white; }
         .btn-back { background: #1a202c; color: white; margin-left: auto; }
@@ -65,7 +65,9 @@
             
             <button id="btnAddDetail" class="btn-tool btn-detail" disabled>📂 Add Detail</button>
             <button id="btnRemoveDetail" class="btn-tool btn-remove" disabled>➖ Remove Detail</button>
-
+            
+            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
+            
             <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
 
@@ -105,14 +107,7 @@
                                 <option value="0">0 : In Active</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="empl_unme" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="empl_pswd" disabled>
-                        </div>
+
                         <div class="form-group full">
                             <label>Nama Lengkap</label>
                             <input type="text" id="empl_name" disabled>
@@ -128,6 +123,16 @@
                                 <option value="1">Admin</option>
                             </select>
                         </div>
+                        
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="empl_unme" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="empl_pswd" disabled>
+                        </div>
+                        
                     </div>
                 </form>
             </div>
