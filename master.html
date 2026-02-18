@@ -15,7 +15,7 @@
             height: 100vh;
             padding: 15px;
             box-sizing: border-box;
-            gap: 10px; /* Jarak antar area lebih rapat */
+            gap: 10px;
         }
 
         /* AREA 1: Toolbar */
@@ -30,7 +30,7 @@
             align-items: center;
         }
 
-        /* BARU: AREA PENCARIAN (SEARCH AREA) */
+        /* AREA PENCARIAN */
         .search-area {
             background: #ffffff;
             padding: 15px;
@@ -61,10 +61,10 @@
             border-radius: 4px;
             font-size: 13px;
             font-family: inherit;
-            min-width: 180px;
+            min-width: 160px;
         }
 
-        /* Utility Buttons */
+        /* Buttons Styling */
         .btn-tool {
             padding: 8px 15px;
             border: none;
@@ -84,11 +84,13 @@
         .btn-search { background: #64748b; color: white; }
         .btn-save { background: #10b981; color: white; }
         .btn-cancel { background: #94a3b8; color: white; }
+        .btn-detail { background: #7e22ce; color: white; }
+        .btn-remove-detail { background: #be185d; color: white; }
         .btn-back { background: #1a202c; color: white; margin-left: auto; }
 
         .btn-tool:hover { opacity: 0.8; transform: translateY(-1px); }
 
-        /* Container Main Content */
+        /* Main Content */
         .main-content {
             display: flex;
             flex: 1;
@@ -161,83 +163,8 @@
             <button class="btn-tool btn-modify">📝 Modify</button>
             <button class="btn-tool btn-delete">🗑️ Delete</button>
             <button class="btn-tool btn-search">🔍 Search</button>
+            
             <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
+            
             <button class="btn-tool btn-save">💾 Save</button>
-            <button class="btn-tool btn-cancel">❌ Cancel</button>
-            <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
-        </div>
-
-        <div class="search-area">
-            <div class="search-group">
-                <label>Kode Karyawan</label>
-                <input type="text" id="search_kode" placeholder="Cari Kode...">
-            </div>
-            <div class="search-group">
-                <label>Nama Karyawan</label>
-                <input type="text" id="search_nama" placeholder="Cari Nama...">
-            </div>
-            <div class="search-group">
-                <label>Alamat Karyawan</label>
-                <input type="text" id="search_alamat" placeholder="Cari Alamat...">
-            </div>
-            <div class="search-group">
-                <label>Status</label>
-                <select id="search_status">
-                    <option value="">-- Semua --</option>
-                    <option value="1">1 : Active</option>
-                    <option value="0">0 : In Active</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="grid-area">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody">
-                        <tr>
-                            <td>EMP01M</td>
-                            <td>Administrator</td>
-                            <td><span style="color:green">● Active</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="entry-area">
-                <h3 style="margin:0 0 15px 0; font-size: 1.2em; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block;">Data Entry</h3>
-                <form id="employeeForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Kode Karyawan</label>
-                            <input type="text" id="empl_id" readonly style="background: #f8fafc;">
-                        </div>
-                        <div class="form-group">
-                            <label>Status Karyawan</label>
-                            <select id="empl_status">
-                                <option value="1">1 : Active</option>
-                                <option value="0">0 : In Active</option>
-                            </select>
-                        </div>
-                        <div class="form-group full">
-                            <label>Nama Lengkap</label>
-                            <input type="text" id="empl_name">
-                        </div>
-                        <div class="form-group full">
-                            <label>Alamat</label>
-                            <textarea id="empl_address" rows="3" style="resize: none; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; font-family: inherit;"></textarea>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-</body>
-</html>
+            <button class="btn-tool btn-cancel
