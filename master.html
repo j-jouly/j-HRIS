@@ -36,8 +36,9 @@
         .main-content { display: flex; flex: 1; gap: 15px; overflow: hidden; }
         .grid-area { flex: 1; background: white; border-radius: 8px; overflow-y: auto; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f8fafc; position: sticky; top: 0; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; }
+        th { background: #f8fafc; position: sticky; top: 0; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #475569; }
         td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+        tr:hover { background: #f1f5f9; cursor: pointer; }
 
         .entry-area { flex: 1.2; background: white; border-radius: 8px; padding: 20px; overflow-y: auto; box-shadow: var(--shadow-light); }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -54,7 +55,7 @@
             <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">➕ New</button>
             <button id="btnModify" class="btn-tool btn-modify">📝 Modify</button>
             <button id="btnDelete" class="btn-tool btn-delete">🗑️ Delete</button>
-            <button id="btnSearch" class="btn-tool btn-search">🔍 Search</button>
+            <button id="btnSearch" class="btn-tool btn-search" onclick="fetchData()">🔍 Search</button>
             
             <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
             
@@ -65,8 +66,6 @@
             
             <button id="btnAddDetail" class="btn-tool btn-detail" disabled>📂 Add Detail</button>
             <button id="btnRemoveDetail" class="btn-tool btn-remove" disabled>➖ Remove Detail</button>
-            
-            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
             
             <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
         </div>
@@ -87,7 +86,13 @@
         <div class="main-content">
             <div class="grid-area">
                 <table>
-                    <thead><tr><th>Kode</th><th>Nama</th><th>Status</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Nama</th>
+                            <th>Status</th>
+                            <th>Level</th> </tr>
+                    </thead>
                     <tbody id="employeeTableBody"></tbody>
                 </table>
             </div>
@@ -132,7 +137,6 @@
                             <label>Password</label>
                             <input type="password" id="empl_pswd" disabled>
                         </div>
-                        
                     </div>
                 </form>
             </div>
@@ -140,13 +144,12 @@
     </div>
 
     <script>
-        // Inisialisasi Supabase
         const _supabaseUrl = 'https://bzrycuvpbsxvutqhxowp.supabase.co';
         const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cnljdXZwYnN4dnV0cWh4b3dwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzNTk5OTEsImV4cCI6MjA4NjkzNTk5MX0.MI2suZLflcMbc5AbPCRaT7_pT9qQISrsV5dKA63Si8s';
         const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
 
         const btnNav = ['btnNew', 'btnModify', 'btnDelete', 'btnSearch'];
-        const btnAct = ['btnSave', 'btnCancel', 'btnAddDetail', 'btnRemoveDetail']; // Ditambahkan tombol detail
+        const btnAct = ['btnSave', 'btnCancel', 'btnAddDetail', 'btnRemoveDetail'];
         const formInputs = ['empl_unme', 'empl_pswd', 'empl_name', 'empl_addr', 'empl_stat', 'empl_levl'];
 
         function setMode(mode) {
@@ -157,6 +160,40 @@
             if (!isEdit) {
                 document.getElementById('employeeForm').reset();
                 document.getElementById('empl_nmbr').value = '';
+            }
+        }
+
+        // FUNGSI FETCH DATA UNTUK GRID
+        async function fetchData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('TH_EMP01M')
+                    .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL')
+                    .order('create_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tableBody = document.getElementById('employeeTableBody');
+                tableBody.innerHTML = '';
+
+                data.forEach(emp => {
+                    const statusText = emp.EMPL_STAT ? 
+                        '<span style="color:green; font-weight:bold;">Active</span>' : 
+                        '<span style="color:red;">In Active</span>';
+                    const levelText = emp.EMPL_LEVL ? 'Admin' : 'User';
+
+                    const row = `
+                        <tr>
+                            <td>${emp.EMPL_NMBR}</td>
+                            <td>${emp.EMPL_NAME}</td>
+                            <td>${statusText}</td>
+                            <td>${levelText}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (err) {
+                console.error("Error fetching:", err.message);
             }
         }
 
@@ -182,8 +219,8 @@
                 EMPL_UNME: document.getElementById('empl_unme').value,
                 EMPL_PSWD: document.getElementById('empl_pswd').value,
                 EMPL_ADDR: document.getElementById('empl_addr').value,
-                EMPL_STAT: parseInt(document.getElementById('empl_stat').value) === 1, // Mengirim boolean jika diperlukan
-                EMPL_LEVL: parseInt(document.getElementById('empl_levl').value) === 1
+                EMPL_STAT: document.getElementById('empl_stat').value === "1",
+                EMPL_LEVL: document.getElementById('empl_levl').value === "1"
             };
 
             if (!data.EMPL_NAME || !data.EMPL_UNME) return alert("Nama dan Username wajib diisi!");
@@ -194,13 +231,18 @@
                 
                 alert("Data Berhasil Disimpan!");
                 setMode('view');
+                fetchData(); // Refresh grid setelah simpan
             } catch (err) {
                 alert("Gagal Simpan: " + err.message);
             }
         }
 
         window.onload = () => {
-            if (!localStorage.getItem('userSession')) window.location.href = 'index.html';
+            if (!localStorage.getItem('userSession')) {
+                window.location.href = 'index.html';
+            } else {
+                fetchData(); // Load data saat halaman dibuka
+            }
         };
     </script>
 </body>
