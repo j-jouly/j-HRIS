@@ -260,40 +260,48 @@
                 tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal: ${err.message}</td></tr>`;
             }
         }
+        
         /**
          * FUNGSI GET DETAIL
          * Mengambil data lengkap 1 karyawan saat baris tabel diklik
          */
         async function getDetail(id) {
             try {
+                console.log("Mengambil detail untuk ID:", id); // Cek di F12 jika ID terkirim
+        
                 const { data, error } = await supabaseClient
                     .from('TH_EMP01M')
                     .select('*')
                     .eq('EMPL_NMBR', id)
-                    .single(); // Kita hanya butuh 1 baris data
+                    .single();
         
                 if (error) throw error;
-        
-                // Isi data ke Form Entry
-                document.getElementById('empl_nmbr').value = data.EMPL_NMBR;
-                document.getElementById('empl_name').value = data.EMPL_NAME;
-                document.getElementById('empl_unme').value = data.EMPL_UNME;
-                document.getElementById('empl_pswd').value = data.EMPL_PSWD;
-                document.getElementById('empl_addr').value = data.EMPL_ADDR;
                 
-                // Konversi Boolean database ke Value Select (1/0)
+                console.log("Data ditemukan:", data); // Cek apakah data muncul di Console
+        
+                // Isi data ke form (Pastikan ID elemen HTML sesuai)
+                document.getElementById('empl_nmbr').value = data.EMPL_NMBR || "";
+                document.getElementById('empl_name').value = data.EMPL_NAME || "";
+                document.getElementById('empl_unme').value = data.EMPL_UNME || "";
+                document.getElementById('empl_pswd').value = data.EMPL_PSWD || "";
+                document.getElementById('empl_addr').value = data.EMPL_ADDR || "";
+                
+                // Mapping Boolean ke String "1" atau "0" untuk Select Box
                 document.getElementById('empl_stat').value = data.EMPL_STAT ? "1" : "0";
                 document.getElementById('empl_levl').value = data.EMPL_LEVL ? "1" : "0";
         
-                // Setelah klik, pastikan mode tetap 'view' (input terkunci) 
-                // kecuali user menekan tombol Modify nanti.
+                // Kunci form kembali (View Mode)
                 setMode('view');
         
+                // AKTIFKAN tombol Modify & Delete setelah data terpilih
+                document.getElementById('btnModify').disabled = false;
+                document.getElementById('btnDelete').disabled = false;
+        
             } catch (err) {
+                console.error("Gagal ambil detail:", err.message);
                 alert("Gagal mengambil detail: " + err.message);
             }
         }
-
         async function startNew() {
             setMode('edit');
             try {
