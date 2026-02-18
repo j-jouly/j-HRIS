@@ -3,154 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Employee - G-Pro Production</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Master Employee | G-Pro Enterprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary: #3ecf8e;
-            --secondary: #3b82f6;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --bg: #f4f7f9;
+            --accent: #10b981;
+            --accent-soft: rgba(16, 185, 129, 0.1);
+            --blue: #3b82f6;
+            --blue-soft: rgba(59, 130, 246, 0.1);
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-700: #334155;
+            --slate-900: #0f172a;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
         }
 
-        body { background: var(--bg); overflow: hidden; margin: 0; font-family: 'Poppins', sans-serif; color: var(--dark); }
-        .master-layout { display: flex; flex-direction: column; height: 100vh; padding: 15px; box-sizing: border-box; gap: 10px; }
-        
-        /* TOOLBAR */
-        .toolbar { background: white; padding: 12px 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        
-        .btn-tool { 
-            padding: 8px 16px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; 
-            transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; color: white;
+        body { 
+            background-color: #f1f5f9; 
+            margin: 0; 
+            font-family: 'Poppins', sans-serif; 
+            color: var(--slate-900);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .btn-tool:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); filter: brightness(1.1); }
-        .btn-tool:active:not(:disabled) { transform: translateY(0); }
-        .btn-tool:disabled { background: #d1d5db !important; color: #9ca3af !important; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .master-layout { 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            padding: 20px; 
+            box-sizing: border-box; 
+            gap: 15px; 
+        }
 
-        .btn-new { background: var(--primary); }
-        .btn-modify { background: var(--secondary); }
-        .btn-delete { background: var(--danger); }
-        .btn-search { background: var(--gray); }
-        .btn-save { background: #10b981; }
-        .btn-cancel { background: #f59e0b; }
-        .btn-back { background: var(--dark); margin-left: auto; }
+        /* HEADER & TOOLBAR */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
 
-        /* SEARCH AREA */
-        .search-area { background: white; padding: 15px; border-radius: 8px; display: flex; gap: 20px; border: 1px solid #e2e8f0; }
-        .search-group { display: flex; flex-direction: column; gap: 4px; }
-        .search-group label { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; }
-        .search-group input, .search-group select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; }
+        .toolbar { display: flex; gap: 8px; }
+
+        .btn-tool {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-new { background: var(--slate-900); color: white; }
+        .btn-modify { background: var(--blue-soft); color: var(--blue); }
+        .btn-delete { background: #fee2e2; color: #ef4444; }
+        .btn-save { background: var(--accent); color: white; }
+        .btn-cancel { background: var(--slate-100); color: var(--slate-700); }
+        .btn-home { background: var(--slate-100); color: var(--slate-900); }
+
+        .btn-tool:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(0.95); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-tool:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        /* SEARCH BAR */
+        .search-card {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            gap: 20px;
+            box-shadow: var(--shadow);
+            align-items: flex-end;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+        .input-group label { font-size: 11px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input, .input-group select {
+            padding: 10px;
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-group input:focus { border-color: var(--blue); }
 
         /* MAIN CONTENT */
-        .main-content { display: flex; flex: 1; gap: 15px; overflow: hidden; }
+        .content-grid { display: grid; grid-template-columns: 1fr 400px; gap: 15px; flex: 1; overflow: hidden; }
+
+        .card { background: white; border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden; }
         
-        /* TABLE GRID */
-        .grid-area { flex: 1.5; background: white; border-radius: 8px; overflow-y: auto; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #f8fafc; position: sticky; top: 0; padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0; color: var(--gray); z-index: 5; }
-        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-        tr { transition: background 0.2s; cursor: pointer; }
-        tr:hover { background: #f0f9ff; }
+        /* TABLE STYLING */
+        .table-container { overflow-y: auto; flex: 1; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { 
+            background: var(--slate-50); 
+            padding: 15px; 
+            text-align: left; 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: var(--slate-700); 
+            position: sticky; 
+            top: 0; 
+            z-index: 10;
+            border-bottom: 1px solid var(--slate-200);
+        }
+        td { padding: 12px 15px; font-size: 13px; border-bottom: 1px solid var(--slate-100); }
+        tr:hover td { background: var(--blue-soft); cursor: pointer; }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-active { background: var(--accent-soft); color: var(--accent); }
+        .badge-inactive { background: #fee2e2; color: #ef4444; }
 
         /* FORM ENTRY */
-        .entry-area { flex: 1; background: white; border-radius: 8px; padding: 20px; overflow-y: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group.full { grid-column: span 2; }
-        .form-group label { font-size: 12px; font-weight: 600; color: var(--gray); }
-        .form-group input, .form-group select, .form-group textarea { 
-            padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 13px; 
+        .form-container { padding: 20px; overflow-y: auto; }
+        .form-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--slate-900); display: flex; align-items: center; gap: 10px; }
+        .form-title::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 10px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .field-label { font-size: 12px; font-weight: 600; color: var(--slate-700); margin-bottom: 5px; display: block; }
+        .field-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--slate-200);
+            border-radius: 8px;
+            font-size: 13px;
+            box-sizing: border-box;
+            font-family: inherit;
         }
-        input:disabled, select:disabled, textarea:disabled { background: #f8fafc; color: #94a3b8; }
-        input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .field-input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+        .field-input:disabled { background: var(--slate-50); color: var(--slate-700); }
     </style>
 </head>
 <body>
 
     <div class="master-layout">
-        <div class="toolbar">
-            <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">➕ New</button>
-            <button id="btnModify" class="btn-tool btn-modify" disabled>📝 Modify</button>
-            <button id="btnDelete" class="btn-tool btn-delete" disabled>🗑️ Delete</button>
-            <button id="btnSearch" class="btn-tool btn-search" onclick="fetchData()">🔍 Search</button>
-            <div style="width: 1px; height: 24px; background: #e2e8f0;"></div>
-            <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>💾 Save</button>
-            <button id="btnCancel" class="btn-tool btn-cancel" onclick="cancelEdit()" disabled>❌ Cancel</button>
-            <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Home</button>
+        <div class="header-section">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="background: var(--accent); width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: white; font-weight: bold;">G</div>
+                <span style="font-weight: 700; font-size: 18px; letter-spacing: -0.5px;">G-PRO <span style="font-weight: 300; color: var(--gray);">Master</span></span>
+            </div>
+            <div class="toolbar">
+                <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">+ New Employee</button>
+                <button id="btnModify" class="btn-tool btn-modify" disabled>Edit</button>
+                <button id="btnDelete" class="btn-tool btn-delete" disabled>Delete</button>
+                <div style="width: 1px; height: 20px; background: var(--slate-200); margin: 0 5px;"></div>
+                <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>Save Changes</button>
+                <button id="btnCancel" class="btn-tool btn-cancel" onclick="cancelAction()" disabled>Cancel</button>
+                <button class="btn-tool btn-home" onclick="window.location.href='dashboard.html'">Home</button>
+            </div>
         </div>
 
-        <div class="search-area">
-            <div class="search-group"><label>Kode</label><input type="text" id="search_kode" placeholder="Cari Kode..."></div>
-            <div class="search-group"><label>Nama</label><input type="text" id="search_nama" placeholder="Cari Nama..."></div>
-            <div class="search-group">
+        <div class="search-card">
+            <div class="input-group">
+                <label>Employee Code</label>
+                <input type="text" id="search_kode" placeholder="Ex: GPro.001">
+            </div>
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="search_nama" placeholder="Search name...">
+            </div>
+            <div class="input-group">
                 <label>Status</label>
                 <select id="search_status">
-                    <option value="">-- Semua --</option>
+                    <option value="">All Status</option>
                     <option value="1">Active</option>
-                    <option value="0">In Active</option>
+                    <option value="0">Inactive</option>
                 </select>
             </div>
+            <button class="btn-tool btn-new" style="height: 40px;" onclick="fetchData()">Apply Filter</button>
         </div>
 
-        <div class="main-content">
-            <div class="grid-area">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Status</th>
-                            <th>Level</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody"></tbody>
-                </table>
+        <div class="content-grid">
+            <div class="card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CODE</th>
+                                <th>FULL NAME</th>
+                                <th>STATUS</th>
+                                <th>ROLE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody">
+                            </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="entry-area">
-                <h3 style="margin:0 0 20px 0; color: var(--secondary); border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Employee Detail</h3>
-                <form id="employeeForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nomor Karyawan</label>
-                            <input type="text" id="empl_nmbr" readonly>
+            <div class="card">
+                <div class="form-container">
+                    <div class="form-title">Employee Details</div>
+                    <form id="employeeForm">
+                        <div class="form-grid">
+                            <div>
+                                <label class="field-label">Employee ID</label>
+                                <input type="text" id="empl_nmbr" class="field-input" readonly style="font-weight: 600; color: var(--blue);">
+                            </div>
+                            <div>
+                                <label class="field-label">Status</label>
+                                <select id="empl_stat" class="field-input" disabled>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="field-label">Full Name</label>
+                                <input type="text" id="empl_name" class="field-input" disabled>
+                            </div>
+                            <div>
+                                <label class="field-label">Address</label>
+                                <textarea id="empl_addr" class="field-input" rows="3" style="resize: none;" disabled></textarea>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <label class="field-label">Username</label>
+                                    <input type="text" id="empl_unme" class="field-input" disabled>
+                                </div>
+                                <div>
+                                    <label class="field-label">Role</label>
+                                    <select id="empl_levl" class="field-input" disabled>
+                                        <option value="0">User</option>
+                                        <option value="1">Administrator</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="field-label">Password</label>
+                                <input type="password" id="empl_pswd" class="field-input" disabled>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select id="empl_stat" disabled>
-                                <option value="1">Active</option>
-                                <option value="0">In Active</option>
-                            </select>
-                        </div>
-                        <div class="form-group full">
-                            <label>Nama Lengkap</label>
-                            <input type="text" id="empl_name" disabled>
-                        </div>
-                        <div class="form-group full">
-                            <label>Alamat</label>
-                            <textarea id="empl_addr" rows="2" style="resize:none;" disabled></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="empl_unme" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="empl_pswd" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Level</label>
-                            <select id="empl_levl" disabled>
-                                <option value="0">User</option>
-                                <option value="1">Admin</option>
-                            </select>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -161,31 +261,28 @@
         const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
 
         let currentMode = 'VIEW';
-        const formInputs = ['empl_unme', 'empl_pswd', 'empl_name', 'empl_addr', 'empl_stat', 'empl_levl'];
+        const formInputIDs = ['empl_name', 'empl_addr', 'empl_unme', 'empl_pswd', 'empl_stat', 'empl_levl'];
 
         function setMode(mode) {
             currentMode = mode;
             const isEdit = (mode === 'NEW' || mode === 'EDIT');
             
-            // Buttons toggle
             document.getElementById('btnNew').disabled = isEdit;
             document.getElementById('btnModify').disabled = isEdit || mode === 'EMPTY';
             document.getElementById('btnDelete').disabled = isEdit || mode === 'EMPTY';
-            document.getElementById('btnSearch').disabled = isEdit;
             document.getElementById('btnSave').disabled = !isEdit;
             document.getElementById('btnCancel').disabled = !isEdit;
 
-            // Inputs toggle
-            formInputs.forEach(id => document.getElementById(id).disabled = !isEdit);
+            formInputIDs.forEach(id => document.getElementById(id).disabled = !isEdit);
         }
 
         async function fetchData() {
             const tableBody = document.getElementById('employeeTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #94a3b8;">Loading data...</td></tr>';
+
             const s_kode = document.getElementById('search_kode').value;
             const s_nama = document.getElementById('search_nama').value;
             const s_stat = document.getElementById('search_status').value;
-
-            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">⌛ Loading...</td></tr>';
 
             try {
                 let query = supabaseClient.from('TH_EMP01M').select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL');
@@ -198,16 +295,16 @@
 
                 tableBody.innerHTML = '';
                 data.forEach(emp => {
-                    const status = emp.EMPL_STAT ? '<b style="color:#10b981">Active</b>' : '<b style="color:#ef4444">In Active</b>';
+                    const statusBadge = emp.EMPL_STAT ? '<span class="badge badge-active">Active</span>' : '<span class="badge badge-inactive">Inactive</span>';
                     tableBody.innerHTML += `
                         <tr onclick="getDetail('${emp.EMPL_NMBR}')">
-                            <td>${emp.EMPL_NMBR}</td>
+                            <td style="font-weight: 600;">${emp.EMPL_NMBR}</td>
                             <td>${emp.EMPL_NAME}</td>
-                            <td>${status}</td>
+                            <td>${statusBadge}</td>
                             <td>${emp.EMPL_LEVL ? 'Admin' : 'User'}</td>
                         </tr>`;
                 });
-            } catch (err) { alert(err.message); }
+            } catch (err) { alert("Error loading data: " + err.message); }
         }
 
         async function getDetail(id) {
@@ -253,27 +350,26 @@
                 else res = await supabaseClient.from('TH_EMP01M').update(payload).eq('EMPL_NMBR', payload.EMPL_NMBR);
 
                 if (res.error) throw res.error;
-                alert("Data Berhasil Disimpan!");
+                alert("Success! Data has been saved.");
                 fetchData();
-                setMode('EMPTY');
-                document.getElementById('employeeForm').reset();
+                cancelAction();
             } catch (err) { alert(err.message); }
         }
 
         async function doDelete(id) {
-            if (!confirm(`Hapus data ${id}?`)) return;
+            if (!confirm(`Are you sure you want to delete ${id}?`)) return;
             const { error } = await supabaseClient.from('TH_EMP01M').delete().eq('EMPL_NMBR', id);
             if (!error) {
-                alert("Data Terhapus");
+                alert("Data deleted successfully.");
                 fetchData();
-                document.getElementById('employeeForm').reset();
-                setMode('EMPTY');
+                cancelAction();
             }
         }
 
-        function cancelEdit() {
+        function cancelAction() {
             setMode('EMPTY');
             document.getElementById('employeeForm').reset();
+            document.getElementById('empl_nmbr').value = '';
         }
 
         window.onload = () => {
