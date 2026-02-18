@@ -202,59 +202,67 @@
          * Mengambil data secara Async dari Supabase
          */
 /**
- * FUNGSI FETCH DATA (ASYNC VERSION)
- * Menampilkan data ke grid dengan filter search
+ * Fungsi Fetch Data dengan fitur Filter
+ * Mengambil data secara Async dari Supabase
  */
 async function fetchData() {
     const tableBody = document.getElementById('employeeTableBody');
+    
+    // Ambil nilai dari input pencarian
     const s_kode = document.getElementById('search_kode').value;
     const s_nama = document.getElementById('search_nama').value;
     const s_stat = document.getElementById('search_status').value;
 
-    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">⌛ Loading Data...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">🔍 Mencari data...</td></tr>';
 
     try {
+        // 1. Inisialisasi Query
         let query = supabaseClient
             .from('TH_EMP01M')
             .select('EMPL_NMBR, EMPL_NAME, EMPL_STAT, EMPL_LEVL');
 
-        // Apply Filters
+        // 2. Tambahkan Filter jika input terisi (ILike = Case Insensitive search)
         if (s_kode) query = query.ilike('EMPL_NMBR', `%${s_kode}%`);
         if (s_nama) query = query.ilike('EMPL_NAME', `%${s_nama}%`);
-        
-        // Handle Boolean Logic for EMPL_STAT
-        if (s_stat !== "") {
-            query = query.eq('EMPL_STAT', s_stat === "1"); 
-        }
+        if (s_stat !== "") query = query.eq('EMPL_STAT', s_stat === "1");
 
+        // 3. Eksekusi Query dengan urutan terbaru di atas
         const { data, error } = await query.order('create_at', { ascending: false });
 
         if (error) throw error;
 
+        // 4. Render ke Tabel
         tableBody.innerHTML = '';
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Data tidak ditemukan.</td></tr>';
+            return;
+        }
+
         data.forEach(emp => {
-            const statusText = emp.EMPL_STAT ? 
-                '<span style="color:#10b981;">● Active</span>' : 
-                '<span style="color:#ef4444;">● In Active</span>';
+            const statusDot = emp.EMPL_STAT ? 
+                '<span style="color:#10b981; font-weight:600;">● Active</span>' : 
+                '<span style="color:#ef4444; font-weight:600;">● In Active</span>';
             
-            const levelText = emp.EMPL_LEVL ? 'Admin' : 'User';
+            const levelTag = emp.EMPL_LEVL ? 
+                '<small style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:10px;">Admin</small>' : 
+                '<small style="background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px;">User</small>';
 
             const row = `
-                <tr onclick="getDetail('${emp.EMPL_NMBR}')">
-                    <td style="font-weight:bold; color:#3b82f6;">${emp.EMPL_NMBR}</td>
+                <tr onclick="getDetail('${emp.EMPL_NMBR}')" title="Klik untuk lihat detail">
+                    <td style="font-weight:600; color:#3b82f6;">${emp.EMPL_NMBR}</td>
                     <td>${emp.EMPL_NAME}</td>
-                    <td>${statusText}</td>
-                    <td>${levelText}</td>
+                    <td>${statusDot}</td>
+                    <td>${levelTag}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
         });
 
     } catch (err) {
-        tableBody.innerHTML = `<tr><td colspan="4" style="color:red;">Error: ${err.message}</td></tr>`;
+        console.error("Fetch Error:", err.message);
+        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Gagal: ${err.message}</td></tr>`;
     }
 }
-
 /**
  * FUNGSI GET DETAIL
  * Mengambil data lengkap 1 karyawan saat baris tabel diklik
