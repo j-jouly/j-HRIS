@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        body { background: #f4f7f9; overflow: hidden; } /* Mencegah double scroll */
+        body { background: #f4f7f9; overflow: hidden; margin: 0; }
         
         .master-layout {
             display: flex;
@@ -15,13 +15,13 @@
             height: 100vh;
             padding: 15px;
             box-sizing: border-box;
-            gap: 15px;
+            gap: 10px; /* Jarak antar area lebih rapat */
         }
 
-        /* AREA 1: Toolbar Sisi Atas */
+        /* AREA 1: Toolbar */
         .toolbar {
             background: white;
-            padding: 15px;
+            padding: 12px 15px;
             border-radius: 8px;
             box-shadow: var(--shadow-light);
             display: flex;
@@ -30,6 +30,41 @@
             align-items: center;
         }
 
+        /* BARU: AREA PENCARIAN (SEARCH AREA) */
+        .search-area {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .search-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .search-group input, .search-group select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            min-width: 180px;
+        }
+
+        /* Utility Buttons */
         .btn-tool {
             padding: 8px 15px;
             border: none;
@@ -49,26 +84,19 @@
         .btn-search { background: #64748b; color: white; }
         .btn-save { background: #10b981; color: white; }
         .btn-cancel { background: #94a3b8; color: white; }
-        .btn-detail { background: #7e22ce; color: white; }
-        
-        /* Tombol Dashboard Baru */
-        .btn-back { 
-            background: #1a202c; 
-            color: white; 
-            margin-left: auto; /* Mendorong tombol ke ujung kanan */
-        }
+        .btn-back { background: #1a202c; color: white; margin-left: auto; }
 
         .btn-tool:hover { opacity: 0.8; transform: translateY(-1px); }
 
-        /* Container untuk Area 2 & 3 */
+        /* Container Main Content */
         .main-content {
             display: flex;
             flex: 1;
             gap: 15px;
-            overflow: hidden; /* Menjaga agar main content tidak meluap */
+            overflow: hidden;
         }
 
-        /* AREA 2: Grid Table (Kiri) */
+        /* AREA 2: Grid Table */
         .grid-area {
             flex: 1;
             background: white;
@@ -95,20 +123,16 @@
             z-index: 10;
         }
 
-        td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
+        td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
         tr:hover { background: #f1f5f9; cursor: pointer; }
 
-        /* AREA 3: Entry Area (Tengah/Kanan) */
+        /* AREA 3: Entry Area */
         .entry-area {
-            flex: 1.5;
+            flex: 1.2;
             background: white;
             border-radius: 8px;
             box-shadow: var(--shadow-light);
-            padding: 25px;
+            padding: 20px;
             overflow-y: auto;
         }
 
@@ -118,26 +142,14 @@
             gap: 15px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
         .form-group.full { grid-column: span 2; }
-
-        .form-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #64748b;
-        }
-
-        .form-group input, .form-group select {
+        .form-group label { font-size: 12px; font-weight: 600; color: #64748b; }
+        .form-group input, .form-group select, .form-group textarea {
             padding: 10px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-family: inherit;
-            font-size: 14px;
         }
     </style>
 </head>
@@ -149,18 +161,33 @@
             <button class="btn-tool btn-modify">📝 Modify</button>
             <button class="btn-tool btn-delete">🗑️ Delete</button>
             <button class="btn-tool btn-search">🔍 Search</button>
-            
             <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
-            
             <button class="btn-tool btn-save">💾 Save</button>
             <button class="btn-tool btn-cancel">❌ Cancel</button>
-            
-            <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
-            
-            <button class="btn-tool btn-detail">📂 Add Detail</button>
-            <button class="btn-tool btn-detail" style="background:#be185d;">➖ Remove Detail</button>
-
             <button class="btn-tool btn-back" onclick="window.location.href='dashboard.html'">🏠 Dashboard</button>
+        </div>
+
+        <div class="search-area">
+            <div class="search-group">
+                <label>Kode Karyawan</label>
+                <input type="text" id="search_kode" placeholder="Cari Kode...">
+            </div>
+            <div class="search-group">
+                <label>Nama Karyawan</label>
+                <input type="text" id="search_nama" placeholder="Cari Nama...">
+            </div>
+            <div class="search-group">
+                <label>Alamat Karyawan</label>
+                <input type="text" id="search_alamat" placeholder="Cari Alamat...">
+            </div>
+            <div class="search-group">
+                <label>Status</label>
+                <select id="search_status">
+                    <option value="">-- Semua --</option>
+                    <option value="1">1 : Active</option>
+                    <option value="0">0 : In Active</option>
+                </select>
+            </div>
         </div>
 
         <div class="main-content">
@@ -168,49 +195,43 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Nama Lengkap</th>
+                            <th>Kode</th>
+                            <th>Nama</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
                         <tr>
                             <td>EMP01M</td>
-                            <td>admin_dii</td>
-                            <td>Administrator DII</td>
+                            <td>Administrator</td>
+                            <td><span style="color:green">● Active</span></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="entry-area">
-                <h3 style="margin-top:0; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block; margin-bottom:20px;">Form Employee Master</h3>
+                <h3 style="margin:0 0 15px 0; font-size: 1.2em; color:var(--secondary-color); border-bottom: 2px solid var(--primary-color); display:inline-block;">Data Entry</h3>
                 <form id="employeeForm">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Employee ID</label>
-                            <input type="text" id="empl_id" readonly style="background: #f1f5f9;" placeholder="Auto">
+                            <label>Kode Karyawan</label>
+                            <input type="text" id="empl_id" readonly style="background: #f8fafc;">
                         </div>
                         <div class="form-group">
-                            <label>Username (EMPL_UNME)</label>
-                            <input type="text" id="empl_unme" required>
+                            <label>Status Karyawan</label>
+                            <select id="empl_status">
+                                <option value="1">1 : Active</option>
+                                <option value="0">0 : In Active</option>
+                            </select>
                         </div>
                         <div class="form-group full">
-                            <label>Full Name</label>
-                            <input type="text" id="empl_name" required>
+                            <label>Nama Lengkap</label>
+                            <input type="text" id="empl_name">
                         </div>
-                        <div class="form-group">
-                            <label>Password (EMPL_PSWD)</label>
-                            <input type="password" id="empl_pswd" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Role / Position</label>
-                            <select id="empl_role">
-                                <option value="STAFF">Staff</option>
-                                <option value="SUPERVISOR">Supervisor</option>
-                                <option value="MANAGER">Manager</option>
-                                <option value="ADMIN">Admin IT</option>
-                            </select>
+                        <div class="form-group full">
+                            <label>Alamat</label>
+                            <textarea id="empl_address" rows="3" style="resize: none; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; font-family: inherit;"></textarea>
                         </div>
                     </div>
                 </form>
@@ -218,11 +239,5 @@
         </div>
     </div>
 
-    <script>
-        // Proteksi sederhana
-        if (!localStorage.getItem('userSession')) {
-            window.location.href = 'index.html';
-        }
-    </script>
 </body>
 </html>
