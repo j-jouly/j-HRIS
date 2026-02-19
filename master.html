@@ -277,7 +277,7 @@
 
         async function fetchData() {
             const tableBody = document.getElementById('employeeTableBody');
-            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; color: #94a3b8;">Loading...</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px; color: #94a3b8;">⌛ Loading...</td></tr>';
             try {
                 let query = supabaseClient.from('TH_EMP01M').select('EMPL_NMBR, EMPL_NAME, EMPL_STAT');
                 const s_kode = document.getElementById('search_kode').value;
