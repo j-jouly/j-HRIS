@@ -24,6 +24,9 @@
         /* Tambahan Warna Orange */
             --jeruk:#f97316;
             --jeruk-hover:#ea580c;
+        /* Tambahan Warna Ungu */
+            --ungu:#a855f7;
+            --ungu-hover:#7e22ce;
                     
         }
 
@@ -75,7 +78,7 @@
         .btn-new { background: var(--slate-900); color: white; }
         .btn-modify { background: var(--blue-soft); color: var(--blue); }
         .btn-delete { background: #fee2e2; color: #ef4444; }
-        .btn-print { background: #fee2e2; color: #ef4444; }
+        .btn-print { background: var(--ungu); color: var(--slate-700); }
         .btn-save { background: var(--accent); color: white; }
         .btn-cancel { background: var(--jeruk); color: var(--slate-700); }
         .btn-home { background: var(--danger); color: var(--slate-900); margin-left: 10px; }
@@ -266,6 +269,7 @@
             document.getElementById('btnNew').disabled = isEdit;
             document.getElementById('btnModify').disabled = isEdit || mode === 'EMPTY';
             document.getElementById('btnDelete').disabled = isEdit || mode === 'EMPTY';
+            document.getElementById('btnPrint').disabled = isEdit || mode === 'EMPTY';
             document.getElementById('btnSave').disabled = !isEdit;
             document.getElementById('btnCancel').disabled = !isEdit;
             inputIDs.forEach(id => document.getElementById(id).disabled = !isEdit);
