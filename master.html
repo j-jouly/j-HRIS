@@ -171,7 +171,7 @@
                 <button id="btnNew" class="btn-tool btn-new" onclick="startNew()">🧔 New</button>
                 <button id="btnModify" class="btn-tool btn-modify" disabled>📝 Modify</button>
                 <button id="btnDelete" class="btn-tool btn-delete" disabled>⛔ Delete</button>                
-                <button id="btnPrint" class="btn-tool btn-print" disabled>🖨️ Print</button>
+                <button id="btnPrint" class="btn-tool btn-print" onclick="printData()" disabled>🖨️ Print</button>
                 <div style="width: 2px; height: 25px; background: #e2e8f0; margin: 0 5px;"></div>
                 <button id="btnSave" class="btn-tool btn-save" onclick="saveData()" disabled>💾 Save</button>
                 <button id="btnCancel" class="btn-tool btn-cancel" onclick="cancelAction()" disabled>♻️ Cancel</button>
@@ -348,6 +348,11 @@
             }
         }
 
+        function printData(){
+           alert("Print Data.");
+            
+        }
+        
         function cancelAction() {
             setMode('EMPTY');
             document.getElementById('employeeForm').reset();
