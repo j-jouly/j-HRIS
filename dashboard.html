@@ -3,72 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sistem Karyawan</title>
+    <title>Dashboard - Sistem Karyawan Glow</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> <style>
-        /* Tambahan style khusus Dashboard agar tidak merusak style.css yang lama */
+    
+    <style>
+        /* --- ROOT & THEME COLORS --- */
+        :root {
+            --primary-neon: #3ecf8e;
+            --primary-glow: rgba(62, 207, 142, 0.4);
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
         .dashboard-container {
             width: 100%;
             max-width: 1000px;
-            padding: 20px;
+            animation: fadeIn 0.8s ease-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HEADER CARD --- */
         .header-card {
-            background: white;
-            padding: 25px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-light);
+            background: var(--card-dark);
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .header-card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-neon), transparent);
+        }
+
         .welcome-msg h2 {
             margin: 0;
-            color: var(--secondary-color);
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px var(--primary-glow);
+            font-size: 1.8rem;
         }
+
         .welcome-msg p {
             margin: 5px 0 0 0;
-            color: #666;
+            color: var(--text-muted);
         }
+
+        /* --- LOGOUT BUTTON (BOUNCE & GLOW) --- */
         .btn-logout {
-            background: #ef4444; /* Warna merah */
+            background: #ef4444;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         .btn-logout:hover {
-            background: #dc2626;
+            background: #ff5f5f;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+            transform: translateY(-3px);
         }
+
+        .btn-logout:active {
+            transform: scale(0.92);
+        }
+
+        /* --- CONTENT GRID --- */
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
         }
+
+        /* --- STAT CARD (GLOW COLORS) --- */
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-light);
-            border-left: 5px solid var(--primary-color);
-            cursor: pointer; /* Menandakan bisa diklik */
-            transition: transform 0.2s, box-shadow 0.2s; /* Efek halus */
-            }
-        
-        .stat-card:hover {
-            transform: translateY(-5px); /* Kartu sedikit naik saat hover */
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            background: var(--card-dark);
+            padding: 25px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
-    
+
         .stat-card h3 {
-            margin-top: 0;
-            font-size: 1.2em;
-            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
+
+        .stat-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Hover Effect: Glow & Bounce */
+        .stat-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.02);
+            border-color: var(--hover-color);
+            box-shadow: 0 10px 30px var(--hover-glow);
+        }
+
+        .stat-card:active {
+            transform: scale(0.95);
+        }
+
+        /* Color Variations */
+        .card-emerald { --hover-color: #3ecf8e; --hover-glow: rgba(62, 207, 142, 0.2); border-left: 4px solid #3ecf8e; }
+        .card-red { --hover-color: #ef4444; --hover-glow: rgba(239, 68, 68, 0.2); border-left: 4px solid #ef4444; }
+        .card-blue { --hover-color: #3b82f6; --hover-glow: rgba(59, 130, 246, 0.2); border-left: 4px solid #3b82f6; }
+        .card-orange { --hover-color: #ea580c; --hover-glow: rgba(234, 88, 12, 0.2); border-left: 4px solid #ea580c; }
+        .card-purple { --hover-color: #a855f7; --hover-glow: rgba(168, 85, 247, 0.2); border-left: 4px solid #a855f7; }
+        .card-amber { --hover-color: #f59e0b; --hover-glow: rgba(245, 158, 11, 0.2); border-left: 4px solid #f59e0b; }
+
     </style>
 </head>
 <body>
@@ -76,72 +163,63 @@
     <div class="dashboard-container">
         <div class="header-card">
             <div class="welcome-msg">
-                <h2 id="userNameDisplay">Halo, Pengguna!</h2>
-                <p>Selamat datang kembali di sistem internal.</p>
+                <h2 id="userNameDisplay">Halo, Bos!</h2>
+                <p>Selamat datang kembali di sistem internal DII.</p>
             </div>
             <button class="btn-logout" onclick="logout()">🚪 Keluar</button>
         </div>
 
-    <div class="content-grid">
-        <div class="stat-card" onclick="location.href='profile.html'">
-            <h3>🧔 Profil Saya</h3>
-            <p>Lihat dan ubah informasi data diri Anda.</p>
-        </div>
-    
-        <div class="stat-card" style="border-left-color: #dc2626;" onclick="location.href='attendance.html'">
-            <h3>⏰ Kehadiran</h3>
-            <p>Catat absensi harian Anda di sini.</p>
-        </div>
+        <div class="content-grid">
+            <div class="stat-card card-emerald" onclick="location.href='profile.html'">
+                <h3>🧔 Profil Saya</h3>
+                <p>Lihat dan ubah informasi data diri Anda secara lengkap.</p>
+            </div>
         
-        <div class="stat-card" style="border-left-color: #3b82f6;" onclick="location.href='reports.html'">
-            <h3>📝 Laporan</h3>
-            <p>Akses dokumen dan laporan bulanan.</p>
-        </div>
-        
-        <div class="stat-card" style="border-left-color: #ea580c;" onclick="location.href='master.html'">
-            <h3>🖥️ Master</h3>
-            <p>Employee Master.</p>
-        </div>
-        
-        <div class="stat-card" style="border-left-color: #7e22ce;" onclick="location.href='leave.html'">
-            <h3>🏖️ Leave</h3>
-            <p>Annual Leave.</p>
-        </div>
-        
-        <div class="stat-card" style="border-left-color: #f59e0b;" onclick="location.href='overtime.html'">
-            <h3>💰 Overtime</h3>
-            <p>Overtime Disapproval.</p>
+            <div class="stat-card card-red" onclick="location.href='attendance.html'">
+                <h3>⏰ Kehadiran</h3>
+                <p>Catat absensi harian dan pantau jam kerja Anda.</p>
+            </div>
+            
+            <div class="stat-card card-blue" onclick="location.href='reports.html'">
+                <h3>📝 Laporan</h3>
+                <p>Akses dokumen penting dan laporan kerja bulanan.</p>
+            </div>
+            
+            <div class="stat-card card-orange" onclick="location.href='master.html'">
+                <h3>🖥️ Master</h3>
+                <p>Manajemen data Employee Master sistem.</p>
+            </div>
+            
+            <div class="stat-card card-purple" onclick="location.href='leave.html'">
+                <h3>🏖️ Leave</h3>
+                <p>Pengajuan dan riwayat Annual Leave Anda.</p>
+            </div>
+            
+            <div class="stat-card card-amber" onclick="location.href='overtime.html'">
+                <h3>💰 Overtime</h3>
+                <p>Monitoring lembur dan Overtime Disapproval.</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // 1. Proteksi Halaman: Cek apakah user sudah login
+        // 1. Proteksi Halaman
         const sessionData = localStorage.getItem('userSession');
         
         if (!sessionData) {
-            // Jika tidak ada data session, tendang balik ke login
-            alert('Akses ditolak! Silakan login terlebih dahulu.');
             window.location.href = 'index.html';
         } else {
-            // Jika ada, tampilkan nama usernya
             const user = JSON.parse(sessionData);
             document.getElementById('userNameDisplay').innerText = `Halo, ${user.username}!`;
         }
 
-        // 2. Fungsi Logout
+        // 2. Fungsi Logout dengan Animasi Konfirmasi
         function logout() {
-            if (confirm('Apakah Anda yakin ingin keluar?')) {
-                localStorage.removeItem('userSession'); // Hapus data login
-                window.location.href = 'index.html';   // Kembali ke login
+            if (confirm('Bos, yakin mau keluar dari sistem?')) {
+                localStorage.removeItem('userSession');
+                window.location.href = 'index.html';
             }
         }
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
