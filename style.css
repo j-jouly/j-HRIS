@@ -2,12 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 :root {
-    --primary-color: #3ecf8e; /* Warna hijau Supabase */
-    --secondary-color: #1a202c; /* Abu-abu gelap */
-    --text-color: #333;
-    --light-gray: #e2e8f0;
-    --border-radius: 8px;
-    --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Warna Glow Utama (Neon Green) */
+    --primary-color: #3ecf8e; 
+    --primary-glow: rgba(62, 207, 142, 0.6);
+    --bg-dark: #0f172a;        /* Navy pekat */
+    --card-dark: #1e293b;      /* Navy lebih terang sedikit */
+    --text-bright: #f8fafc;
+    --border-glow: #334155;
+    --border-radius: 12px;
 }
 
 body {
@@ -18,59 +20,65 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f0f4f8 0%, #e0e8f0 100%);
-    color: var(--text-color);
+    /* Background Gradient Gelap */
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    color: var(--text-bright);
+    overflow: hidden;
 }
 
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 100%;
     padding: 20px;
+    display: flex;
+    justify-content: center;
 }
 
 .login-card {
-    background: #ffffff;
+    background: var(--card-dark);
     padding: 40px;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-light);
+    /* Shadow Glow untuk Card */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 40px rgba(62, 207, 142, 0.05);
     width: 100%;
     max-width: 400px;
     text-align: center;
-    box-sizing: border-box;
+    border: 1px solid var(--border-glow);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Logo Header */
+/* Garis Glow di Atas Card */
+.login-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+}
+
 .logo-wrapper {
     width: 80px;
     height: 80px;
     margin: 0 auto 20px auto;
     border-radius: 20px;
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid var(--light-gray);
-    background-color: #fff;
-}
-
-.logo-wrapper img {
-    width: 70%;
-    height: 70%;
-    object-fit: contain;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
 .login-title {
-    font-size: 2em; /* Sedikit dikecilkan agar lebih proporsional */
-    color: var(--secondary-color);
-    margin-bottom: 10px;
+    font-size: 1.8em;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-glow);
+    margin-bottom: 5px;
     font-weight: 700;
 }
 
 .login-subtitle {
-    font-size: 0.95em;
-    color: #666;
+    font-size: 0.9em;
+    color: #94a3b8;
     margin-bottom: 30px;
 }
 
@@ -83,66 +91,64 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: var(--secondary-color);
-    font-size: 0.9em;
+    color: var(--primary-color);
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
 }
 
-/* SINKRONISASI INPUT: 
-   Menggabungkan text, email, dan password agar bentuk & ukuran 100% sama 
-*/
-.input-group input[type="text"],
-.input-group input[type="email"],
-.input-group input[type="password"] {
-    width: 100%;             /* Mengisi penuh container */
-    padding: 12px 15px;      /* Padding simetris */
-    border: 1px solid var(--light-gray);
+/* INPUT DENGAN EFEK GLOW */
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-glow);
     border-radius: var(--border-radius);
-    font-size: 16px;         /* Standar ukuran agar tidak auto-zoom di mobile */
-    font-family: 'Poppins', sans-serif;
-    box-sizing: border-box;  /* PENTING: Padding tidak menambah lebar kotak */
-    transition: all 0.2s ease-in-out;
-    background-color: #fcfcfc;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.15);
+    background: rgba(15, 23, 42, 0.9);
+    /* Cahaya Fokus */
+    box-shadow: 0 0 15px var(--primary-glow);
+    transform: scale(1.02);
 }
 
+/* TOMBOL MENYALA */
 .login-button {
     width: 100%;
     padding: 14px;
     background-color: var(--primary-color);
-    color: white;
+    color: #0f172a;
     border: none;
     border-radius: var(--border-radius);
-    font-size: 1.05em;
-    font-weight: 600;
+    font-size: 1em;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    /* Glow Tombol */
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
 .login-button:hover {
-    background-color: #33b57b;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(62, 207, 142, 0.2);
+    background-color: #ffffff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
 }
 
-/* Alert/Message Box styling */
-#messageBox {
-    text-align: left;
-    font-size: 0.85em;
-    border-radius: 6px;
-    margin-bottom: 15px;
+.login-button:active {
+    transform: scale(0.95);
 }
 
-/* Social Login */
+/* SOCIAL LOGIN DARK STYLE */
 .social-login {
     margin-top: 35px;
-    border-top: 1px solid var(--light-gray);
+    border-top: 1px solid var(--border-glow);
     position: relative;
 }
 
@@ -151,16 +157,14 @@ body {
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: #ffffff;
+    background: var(--card-dark);
     padding: 0 15px;
-    font-size: 0.85em;
-    color: #888;
-    margin: 0;
+    font-size: 0.8em;
+    color: #64748b;
 }
 
 .social-buttons {
     display: flex;
-    justify-content: space-around;
     gap: 12px;
     margin-top: 25px;
 }
@@ -169,33 +173,15 @@ body {
     flex: 1;
     padding: 10px;
     border-radius: var(--border-radius);
-    font-size: 0.9em;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.social-button.google {
-    background: #ffffff;
-    border: 1px solid var(--light-gray);
-    color: var(--text-color);
-}
-
-.social-button.github {
-    background: #24292e;
+    border: 1px solid var(--border-glow);
+    background: rgba(255, 255, 255, 0.03);
     color: white;
-    border: 1px solid #24292e;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* Responsif */
-@media (max-width: 500px) {
-    .login-card {
-        padding: 30px 20px;
-    }
-    .social-buttons {
-        flex-direction: column;
-    }
+.social-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-glow);
 }
